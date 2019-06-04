@@ -40,7 +40,9 @@ public class Zona {
 		this.inspector = inspector;
 	}
 	
-
+	public String toString() {
+		return "ID: "+idZona + "\nZona: "+zona+"\nIsnpector: "+inspector;
+	}
 
 	
 	

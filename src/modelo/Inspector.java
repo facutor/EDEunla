@@ -56,7 +56,7 @@ public class Inspector {
 	}
 
 	public String toString() {
-		return "ID: "+idInspector+"\nDni: "+dni+"\tInspector: "+traerNombreCompleto();
+		return "ID: "+idInspector+"\tDni: "+dni+"\tInspector: "+traerNombreCompleto();
 	}
 	
 	

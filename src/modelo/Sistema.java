@@ -787,10 +787,11 @@ public class Sistema {
 		else throw new Exception("Excepcion: La Lectura solicitada no existe");
 	}
 
-	public void modificarZona(int idZona, String zona) throws Exception {
+	public void modificarZona(int idZona, String zona , Inspector inspector) throws Exception {
 		
 		if(traerZona(idZona) != null) {
 			traerZona(idZona).setZona(zona);
+			traerZona(idZona).setInspector(inspector);
 		}
 		else throw new Exception("Excepcion: La zona solicitada no existe");
 	}
