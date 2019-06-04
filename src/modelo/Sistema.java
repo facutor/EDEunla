@@ -162,12 +162,12 @@ public class Sistema {
 			return false;
 		return true;
 	}
-	/********************************************Agregar metodos**********************************************/
-	public boolean agregarFactura(Lectura lectura,Tarifa tarifa,List<ItemFactura> lItemFacturas) {
+	/********************************************Agregar metodos
+	 * @throws Exception **********************************************/
+	public boolean agregarFactura(Lectura lectura,LocalDate fecha,Tarifa tarifa,List<ItemFactura> lItemFacturas) throws Exception {
 		int id = 1;//generador del id de factura
-		
+		if (traerFactura(lectura)!=null) throw new Exception("Excepcion: La factura ingresada ya existe");
 		if( !listaFacturas.isEmpty() ) {
-			
 			for (int i = 0; i < listaFacturas.size() ; i++) {
 				id++;
 			}
@@ -182,7 +182,7 @@ public class Sistema {
 					cliente = ( (ClienteJuridico)lectura.getMedidor().getCliente() ).getNombreEmpresa() ;//razon social/nombre de la empresa (cliente juridico)
 		 }
 		 
-		Factura f = new Factura(id, cliente , lectura, lectura.getFechaRegistro() , lectura.getMedidor().getIdMedidor() , tarifa, lItemFacturas);
+		Factura f = new Factura(id, cliente , lectura, fecha , lectura.getMedidor().getIdMedidor() , tarifa, lItemFacturas);
 		return listaFacturas.add(f);
 	}
 	
@@ -317,7 +317,7 @@ public class Sistema {
 				contador ++;
 			}
 			if( !existe ) {
-				if( cliente.getDemanda().equals("Alta") ) {
+				if( cliente.getDemanda().equalsIgnoreCase("Alta") ) {
 					Medidor m = new Medidor(contador, domicilioMedidor, false, cliente);
 					listaMedidores.add(m);
 				}
@@ -596,7 +596,7 @@ public class Sistema {
 		while(tarifaBaja == null && contador<listaTarifas.size() ) {
 			if (listaTarifas.get(contador) instanceof TarifaBaja) {
 				TarifaBaja tb = (TarifaBaja) listaTarifas.get(contador);
-				if (tb.getServicio().equals(Servicio)) {
+				if (tb.getServicio().equals(servicio)) {
 					tarifaBaja = (TarifaBaja)listaTarifas.get(contador);
 				}
 			}
@@ -621,11 +621,11 @@ public class Sistema {
 	}
 	
 	
-	public Factura traerFactura(int idFactura) {
+	public Factura traerFactura(Lectura lectura) {
 		Factura dato = null;
 		int i=0;
 		while (dato==null && i<listaFacturas.size()) {
-			if ( listaFacturas.get(i).getIdFactura()==idFactura) {
+			if ( listaFacturas.get(i).getLectura().equals(lectura)) {
 				dato=listaFacturas.get(i);
 			}
 			i++;
@@ -731,9 +731,9 @@ public class Sistema {
 		}
 		else throw new Exception("Excepcion: La tarifa ingresa no existe");
 	}
-	public void eliminarFactura(int idFactura) throws Exception {
-		if (traerFactura(idFactura)!=null) {
-			listaFacturas.remove(traerFactura(idFactura));
+	public void eliminarFactura(Lectura lectura) throws Exception {
+		if (traerFactura(lectura)!=null) {
+			listaFacturas.remove(traerFactura(lectura));
 		}
 		else {
 			throw new Exception("Exception: La factura ingresada no existe");
