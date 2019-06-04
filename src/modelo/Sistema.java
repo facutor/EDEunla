@@ -822,51 +822,8 @@ public class Sistema {
 	}
 	
 	
-	/*****************************************Calcula Totales***************************************************************/
-	public float calcularConsumoBajo(Lectura lecturaActual,Lectura lecturaAnterior) {
-		float consumoPeriodo = 0;
-		
-		if(traerLecturaBaja( lecturaActual.getFechaRegistro() ).getFechaRegistro() != null &&
-				traerLecturaBaja( lecturaAnterior.getFechaRegistro() ).getFechaRegistro() != null) {
-			
-			Period periodo = Period.between( traerLecturaBaja(lecturaAnterior.getFechaRegistro()).getFechaRegistro() ,
-					traerLecturaBaja(lecturaActual.getFechaRegistro() ).getFechaRegistro() );
-			
-			if(periodo.getMonths() == 2) {//verifico que las fechas esten entre 2 meses
-				
-				consumoPeriodo = traerLecturaBaja(lecturaActual.getFechaRegistro()).getConsumo()
-						- traerLecturaBaja(lecturaAnterior.getFechaRegistro()).getConsumo();
-			}
-		}
-		
-		return consumoPeriodo;
-	}
+	
 
-	public float calcularConsumoAlto(Lectura lecturaActual,Lectura lecturaAnterior) {
-		float consumoPeriodo = 0 , consumoPico = 0 , consumoValle = 0 , consumoResto = 0;
-		
-		if(traerLecturaAlta( lecturaActual.getFechaRegistro() ).getFechaRegistro() != null &&
-				traerLecturaAlta( lecturaAnterior.getFechaRegistro() ).getFechaRegistro() != null) {
-			
-			Period periodo = Period.between( traerLecturaAlta(lecturaAnterior.getFechaRegistro()).getFechaRegistro() ,
-					traerLecturaAlta(lecturaActual.getFechaRegistro() ).getFechaRegistro() );
-			
-			if(periodo.getMonths() == 2) {//verifico que las fechas esten entre 2 meses
-				consumoPico = traerLecturaAlta(lecturaActual.getFechaRegistro()).getConsumoHorasPico()
-						- traerLecturaAlta(lecturaAnterior.getFechaRegistro()).getConsumoHorasPico();
-				
-				consumoValle = traerLecturaAlta(lecturaActual.getFechaRegistro()).getConsumoHorasValle()
-						- traerLecturaAlta(lecturaAnterior.getFechaRegistro()).getConsumoHorasValle();
-				
-				consumoResto = traerLecturaAlta(lecturaActual.getFechaRegistro()).getConsumoHorasResto()
-						- traerLecturaAlta(lecturaAnterior.getFechaRegistro()).getConsumoHorasResto();
-				
-				consumoPeriodo = consumoPico + consumoValle + consumoResto;
-			}
-		}
-		
-		return consumoPeriodo;
-	}
- 	
+	
 	
 }
