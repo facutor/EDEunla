@@ -162,8 +162,13 @@ public class Sistema {
 			return false;
 		return true;
 	}
-	/********************************************Agregar metodos
-	 * @throws Exception **********************************************/
+	/********************************************Agregar metodos*****************************/
+	public boolean agregarItemFactura(long idItemFactura,String detalle,float precioUnitario,int cantidad,String unidad) {
+		
+		ItemFactura itemFactura = new ItemFactura(idItemFactura, detalle, precioUnitario, cantidad, unidad);
+		return listaItemFactura.add(itemFactura);
+	}
+	
 	public boolean agregarFactura(Lectura lectura,LocalDate fecha,Tarifa tarifa,List<ItemFactura> lItemFacturas) throws Exception {
 		int id = 1;//generador del id de factura
 		if (traerFactura(lectura)!=null) throw new Exception("Excepcion: La factura ingresada ya existe");
