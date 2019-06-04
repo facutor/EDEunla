@@ -57,7 +57,13 @@ public class ItemFactura {
 	}
 
 
-
+	public float calcularSubtotal() {
+		
+		return precioUnitario*cantidad;
+	}
+	
+	
+	
 	@Override
 	public String toString() {
 		return "itemFactura [idItemFactura=" + idItemFactura + ", detalle=" + detalle + ", precioUnitario="

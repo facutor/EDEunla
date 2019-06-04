@@ -76,8 +76,16 @@ public class Factura {
 		this.listaItemFactura = listaItemFactura;
 	}
 	
+	/**********************************************************************************/
+	private float calcularTotal() {
+		float total = 0;
+		
+		for (int i = 0; i < listaItemFactura.size() ; i++) {
+			total += listaItemFactura.get(i).calcularSubtotal();
+		}
+		
+		return total;
+	}
 	
-	
-	
-	
+		
 }
