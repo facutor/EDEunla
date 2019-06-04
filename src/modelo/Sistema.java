@@ -413,6 +413,15 @@ public class Sistema {
 	}
 
 	
+	public boolean agregarTarifaBaja(String servicio, List<DetalleBaja> listaDetalle) throws Exception {
+		if (traerTarifaBaja(servicio)!= null) {
+			throw new Exception("La tarifa ingresada ya existe");
+		}
+		TarifaBaja tarifaBaja = new TarifaBaja(servicio, listaDetalle);
+		
+		return listaTarifas.add(tarifaBaja);
+	}
+	
 	/**********************************************Traer Metodos**************************************************/
 	public Inspector traerInspector(long dni) {
 		Inspector inspector = null;
