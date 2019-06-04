@@ -163,6 +163,29 @@ public class Sistema {
 		return true;
 	}
 	/********************************************Agregar metodos**********************************************/
+	public boolean agregarFactura(Lectura lectura,Tarifa tarifa,List<ItemFactura> lItemFacturas) {
+		int id = 1;//generador del id de factura
+		
+		if( !listaFacturas.isEmpty() ) {
+			
+			for (int i = 0; i < listaFacturas.size() ; i++) {
+				id++;
+			}
+		}
+		String cliente = "";
+		
+		 if ( lectura.getMedidor().getCliente() instanceof ClienteFisico ) {
+			 cliente = ( (ClienteFisico)lectura.getMedidor().getCliente() ).getApellido()+
+					 " "+( (ClienteFisico)lectura.getMedidor().getCliente() ).getNombre(); //nombre del cliente fisico
+		 }
+		 else if( lectura.getMedidor().getCliente() instanceof ClienteJuridico ) {
+					cliente = ( (ClienteJuridico)lectura.getMedidor().getCliente() ).getNombreEmpresa() ;//razon social/nombre de la empresa (cliente juridico)
+		 }
+		 
+		Factura f = new Factura(id, cliente , lectura, lectura.getFechaRegistro() , lectura.getMedidor().getIdMedidor() , tarifa, lItemFacturas);
+		return listaFacturas.add(f);
+	}
+	
 	public boolean agregarTarifaAlta(String servicio,String tensionContratada, int limite ,List<DetalleAlta> lisDetalleAltas)throws Exception {
 		if(traerTarifaAlta(servicio) != null) throw new Exception("Exepcion: La Tarifa ya existe");
 		
