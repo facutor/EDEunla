@@ -244,7 +244,7 @@ public class Sistema {
 					agregado = true;
 				}
 				else {
-					throw new Exception("Excepcion: El cliente ya existe");
+					throw new Exception("Excepcion: El cliente que desea agregar ya existe");
 				}
 				
 			}
@@ -257,7 +257,7 @@ public class Sistema {
 			
 		}
 		else {
-			throw new Exception("Exepcion: La demanda es incorrecta");
+			throw new Exception("Exepcion: La demanda "+demanda+"es incorrecta");
 		}
 		
 		return agregado;
@@ -289,7 +289,7 @@ public class Sistema {
 					agregado = true;
 				}
 				else {
-					throw new Exception("Excepcion: El cliente ya existe");
+					throw new Exception("Excepcion: El cliente que desea agregar ya existe");
 				}
 				
 			}
@@ -302,7 +302,7 @@ public class Sistema {
 			
 		}
 		else {
-			throw new Exception("Exepcion: La demanda es incorrecta");
+			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
 		}
 		
 		return agregado;
@@ -333,7 +333,7 @@ public class Sistema {
 				agregado = true;
 			}
 			else {
-				throw new Exception("Excepcion: El medidor ya existe");
+				throw new Exception("Excepcion: El medidor ingresado ya existe");
 			}
 		}
 		else {
@@ -667,7 +667,7 @@ public class Sistema {
 		if(traerClienteFisico(cuil).getDemanda() != null) {
 			listaClientes.remove( traerClienteFisico(cuil) );
 		}
-		else throw new Exception("Excepcion: El Cliente solicitado no existe");
+		else throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere eliminar no existe");
 	}
 	
 	
@@ -677,7 +677,7 @@ public class Sistema {
 			listaClientes.remove( traerClienteJuridico(cuit) );
 		}
 		else {
-			throw new Exception("Excepcion: El Cliente solicitado no existe");
+			throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere eliminar no existe");
 		}
 	}
 
@@ -688,7 +688,7 @@ public class Sistema {
 			listaMedidores.remove( traerMedidor(idMedidor) );
 		}
 		else {
-			throw new Exception("Excepcion: El Medidor solicitado no existe");
+			throw new Exception("Excepcion: El Medidor con id "+idMedidor+" que quiere eliminar no existe");
 		}
 	}
 
@@ -698,7 +698,7 @@ public class Sistema {
 		if (traerZona(idZona).getZona()!=null) {
 			listaZonas.remove( traerZona(idZona) );
 		}
-		else throw new Exception("Excepcion: La Zona solicitada no existe");
+		else throw new Exception("Excepcion: La Zona con id "+idZona+" que quiere eliminar no existe");
 	}
 	
 
@@ -793,7 +793,7 @@ public class Sistema {
 			traerZona(idZona).setZona(zona);
 			traerZona(idZona).setInspector(inspector);
 		}
-		else throw new Exception("Excepcion: La zona solicitada no existe");
+		else throw new Exception("Excepcion: La zona con id "+idZona+" que quiere modificar no existe");
 	}
 	
 	public void modificarMedidor(int idMedidor, Cliente cliente) throws Exception {
@@ -807,24 +807,24 @@ public class Sistema {
 				traerMedidor(idMedidor).setEsBaja(true);
 			}
 		}
-		else throw new Exception("Excepcion: El Medidor solicitado no existe");
+		else throw new Exception("Excepcion: El Medidor con "+idMedidor+" que quiere modificar no existe");
 		
 	}
 		
 	public void modificarClienteFisico(String cuil, String demanda) throws Exception {
 		
-		if(traerClienteFisico(cuil) != null) {
+		if(traerClienteFisico(cuil).getNombre() != null) {
 			traerClienteFisico(cuil).setDemanda(demanda);
 		}
-		else throw new Exception("Excepcion: El Cliente solicitado no existe");
+		else throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere modificar no existe");
 	}
 	
 	public void modificarClienteJuridico(String cuit, String demanda) throws Exception {
 		
-		if (traerClienteJuridico(cuit) != null) {
+		if (traerClienteJuridico(cuit).getNombreEmpresa() != null) {
 			traerClienteJuridico(cuit).setDemanda(demanda);
 		}
-		else throw new Exception("Excepcion: El Cliente solicitado no existe");
+		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
 	}
 	
 	
