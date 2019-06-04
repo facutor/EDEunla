@@ -421,7 +421,7 @@ public class Sistema {
 		
 		return listaTarifas.add(tarifaBaja);
 	}
-	
+	 
 	/**********************************************Traer Metodos**************************************************/
 	public Inspector traerInspector(long dni) {
 		Inspector inspector = null;
@@ -566,7 +566,7 @@ public class Sistema {
 		}
 	}
 	
-	public TarifaBaja traerTarifaBaja(String Servicio) {
+	public TarifaBaja traerTarifaBaja(String servicio) {
 		TarifaBaja tarifaBaja =null;
 		int contador=0;
 		
@@ -696,7 +696,33 @@ public class Sistema {
 		}
 	}
 	
+	public void eliminarTarifaAlta(String servicio) throws Exception {
+		if (traerTarifaAlta(servicio).getServicio() != null) {
+			listaTarifas.remove(traerTarifaAlta(servicio));
+		}
+		else throw new Exception("Excepcion: La tarifa ingresada no exite");
+	}
+	public void eliminarTarifaBaja(String servicio) throws Exception {
+		if (traerTarifaBaja(servicio).getServicio() != null) {
+			listaTarifas.remove(traerTarifaBaja(servicio));
+		}
+		else throw new Exception("Excepcion: La tarifa ingresa no existe");
+	}
+	public void eliminarFactura(int idFactura) throws Exception {
+		if (traerFactura(idFactura)!=null) {
+			listaFacturas.remove(traerFactura(idFactura));
+		}
+		else {
+			throw new Exception("Exception: La factura ingresada no existe");
+		}
+	}
 	
+	public void eliminarItemFactura(int idItemFactura) throws Exception {
+		if (traerItemFactura(idItemFactura)!=null) {
+			listaItemFactura.remove(traerItemFactura(idItemFactura));
+		}
+		else throw new Exception("Exception: El Item Factura ingresado no existe");
+	}
 	/*******************************************Modificar Metodos*************************************************************/
 	public void modificarInspector(long dni , String nombre,String apellido)throws Exception {
 		Inspector inspector = traerInspector(dni);
