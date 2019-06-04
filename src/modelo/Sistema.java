@@ -23,18 +23,16 @@ public class Sistema {
 	
 	
 	
-	public Sistema(List<Cliente> listaClientes, List<Zona> listaZonas, List<Medidor> listaMedidores,
-			List<Lectura> listaLectura, List<Inspector> listaInspector, List<Tarifa> listaTarifas,
-			List<Factura> listaFacturas, List<ItemFactura> listaItemFactura) {
+	public Sistema() {
 		super();
-		this.listaClientes = listaClientes;
-		this.listaZonas = listaZonas;
-		this.listaMedidores = listaMedidores;
-		this.listaLectura = listaLectura;
-		this.listaInspector = listaInspector;
-		this.listaTarifas = listaTarifas;
-		this.listaFacturas = listaFacturas;
-		this.listaItemFactura = listaItemFactura;
+		this.listaClientes = new ArrayList<Cliente>();
+		this.listaMedidores = new ArrayList<Medidor>();
+		this.listaLectura = new ArrayList<Lectura>();
+		this.listaInspector = new ArrayList<Inspector>();
+		this.listaTarifas = new ArrayList<Tarifa>();
+		this.listaZonas = new ArrayList<Zona>();
+		this.listaFacturas = new ArrayList<Factura>();
+		this.listaItemFactura = new ArrayList<ItemFactura>();
 	}
 	/*********************getters y setters**********************/
 	
@@ -165,6 +163,13 @@ public class Sistema {
 		return true;
 	}
 	/********************************************Agregar metodos**********************************************/
+	public boolean agregarTarifaAlta(String servicio,String tensionContratada, int limite ,List<DetalleAlta> lisDetalleAltas)throws Exception {
+		if(traerTarifaAlta(servicio) != null) throw new Exception("Exepcion: La Tarifa ya existe");
+		
+		Tarifa t = new TarifaAlta(servicio, tensionContratada, limite, lisDetalleAltas);
+		return listaTarifas.add(t);
+	}
+	
 	public boolean agregarInspector(long dni,String nombre,String apellido) throws Exception{
 		
 		if(traerInspector(dni) != null ) {
@@ -568,20 +573,19 @@ public class Sistema {
 		return tarifaBaja;
 	}
 	
-	public TarifaAlta traerTarifaAlta(String Servicio) {
-		TarifaAlta dato =null;
+	public TarifaAlta traerTarifaAlta(String servicio) {
+		TarifaAlta dato = null;
 		int c=0;
-		while (dato == null && c<listaTarifas.size()) {
+		while ( dato == null && c < listaTarifas.size() ) {
 			if (listaTarifas.get(c) instanceof TarifaAlta) {
 				TarifaAlta ta = (TarifaAlta) listaTarifas.get(c);
-				if (ta.getServicio().equals(Servicio)) {
-					dato = (TarifaAlta) listaTarifas.get(c);
+				if (ta.getServicio().equals(servicio)) {
+					dato = ta;
 				}
 			}
 			c++;
 		}
-		return dato;
-		
+		return dato;	
 	}
 	
 	
