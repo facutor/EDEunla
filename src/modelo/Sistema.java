@@ -5,6 +5,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.StyledEditorKit.ItalicAction;
+
 /*
  * NOTA SISTEMA VA A ACTUAR COMO UNA 'BASE DE DATO' PARA PODER AGREGAR CLIENTES E INSPECTORES Y ASI PODER REALIZAR TODO LO DEMAS
  */
@@ -577,6 +579,32 @@ public class Sistema {
 				}
 			}
 			c++;
+		}
+		return dato;
+		
+	}
+	
+	
+	public Factura traerFactura(int idFactura) {
+		Factura dato = null;
+		int i=0;
+		while (dato==null && i<listaFacturas.size()) {
+			if ( listaFacturas.get(i).getIdFactura()==idFactura) {
+				dato=listaFacturas.get(i);
+			}
+			i++;
+		}
+		return dato;
+	}
+	
+	public ItemFactura traerItemFactura(long idItemFactura) {
+		ItemFactura dato =null;
+		int i=0;
+		while (dato==null && i<listaItemFactura.size()) {
+			if (listaItemFactura.get(i).getIdItemFactura()==idItemFactura) {
+				dato=listaItemFactura.get(i);
+			}
+			i++;
 		}
 		return dato;
 		
