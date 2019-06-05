@@ -25,6 +25,10 @@ public class LecturaBaja extends Lectura {
 		this.consumo = consumo;
 	}
 	
+	@Override
+	public String toString() {
+		return "[consumo=" + consumo + "]";
+	}
 	
 
 }

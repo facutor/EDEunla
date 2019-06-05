@@ -39,6 +39,12 @@ public class LecturaAlta extends Lectura{
 	public void setConsumoHorasResto(int consumoHorasResto) {
 		this.consumoHorasResto = consumoHorasResto;
 	}
+
+	@Override
+	public String toString() {
+		return "[consumoHorasPico=" + consumoHorasPico + ", consumoHorasValle=" + consumoHorasValle
+				+ ", consumoHorasResto=" + consumoHorasResto + "]";
+	}
 	
 
 }

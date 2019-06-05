@@ -163,13 +163,13 @@ public class Sistema {
 		return true;
 	}
 	/********************************************Agregar metodos*****************************/
-	public boolean agregarItemFactura(long idItemFactura,String detalle,float precioUnitario,int cantidad,String unidad) {
+	public boolean agregarItemFactura(long idItemFactura,String detalle,float precioUnitario,int cantidad,String unidad,List<ItemFactura> lisItemFacturas) {
 		
 		ItemFactura itemFactura = new ItemFactura(idItemFactura, detalle, precioUnitario, cantidad, unidad);
 		return listaItemFactura.add(itemFactura);
 	}
 	
-	public boolean agregarFactura(Lectura lecturaAnterior,Lectura lecturaActual,LocalDate fecha) throws Exception {
+	public boolean agregarFactura(Lectura lecturaAnterior,Lectura lecturaActual,LocalDate fecha,List<ItemFactura> lisItemFacturas) throws Exception {
 		
 		if( lecturaActual.getMedidor().getIdMedidor() != lecturaAnterior.getMedidor().getIdMedidor() )throw new Exception("Execpion: La Lecturas no tienen el mismo Medidor");
 		
@@ -193,7 +193,7 @@ public class Sistema {
 					cliente = ( (ClienteJuridico)lecturaActual.getMedidor().getCliente() ).getNombreEmpresa() ;//razon social/nombre de la empresa (cliente juridico)
 		 }
 		 
-		Factura f = new Factura(id, fecha, cliente, lecturaActual.getMedidor().getIdMedidor() , lecturaAnterior, lecturaActual);
+		Factura f = new Factura(id, fecha, cliente, lecturaActual.getMedidor().getIdMedidor() , lecturaAnterior, lecturaActual,lisItemFacturas );
 		return listaFacturas.add(f);
 	}
 	

@@ -15,7 +15,7 @@ public class Factura {
 	private List<ItemFactura> listaItemFactura;
 
 	public Factura(int idFactura, LocalDate fecha, String cliente, int nroMedidor, Lectura lecturaAnterior,
-			Lectura lecturaActual) {
+			Lectura lecturaActual, List<ItemFactura> listaItemFactura) {
 		super();
 		this.idFactura = idFactura;
 		this.fecha = fecha;
@@ -23,7 +23,7 @@ public class Factura {
 		this.nroMedidor = nroMedidor;
 		this.lecturaAnterior = lecturaAnterior;
 		this.lecturaActual = lecturaActual;
-		this.listaItemFactura = new ArrayList<ItemFactura>();
+		this.listaItemFactura = listaItemFactura;
 	}
 	/*****************************getters y setters******************************/
 	public int getIdFactura() {
@@ -78,6 +78,7 @@ public class Factura {
 		this.lecturaActual = lecturaActual;
 	}
 
+	
 	/**********************************************************************************/
 	public float calcularTotal() {
 		float total = 0;
@@ -92,7 +93,7 @@ public class Factura {
 	public float calcularConsumoBajo() {
 		
 		float consumoBajo = 0;
-		if(lecturaAnterior instanceof LecturaBaja && lecturaActual instanceof Lectura) {
+		if(lecturaAnterior instanceof LecturaBaja && lecturaActual instanceof LecturaBaja) {
 			consumoBajo=( (LecturaBaja) lecturaActual).getConsumo() - ( (LecturaBaja) lecturaAnterior).getConsumo();
 		}
 		return consumoBajo ;
@@ -100,21 +101,35 @@ public class Factura {
 	}
 	
 	public float calcularConsumoHorasPico() {
-		
-		return ( (LecturaAlta)lecturaActual).getConsumoHorasPico() - ( (LecturaAlta)lecturaActual).getConsumoHorasPico();
-	
+		float consumoPico = 0;
+		if(lecturaAnterior instanceof LecturaAlta && lecturaActual instanceof LecturaAlta) {
+			consumoPico = ( (LecturaAlta)lecturaActual).getConsumoHorasPico() - ( (LecturaAlta)lecturaAnterior).getConsumoHorasPico();
+		}
+		return consumoPico;
 	}
 	
 	public float calcularConsumoHorasValle() {
-	
-		return ( (LecturaAlta)lecturaActual).getConsumoHorasValle() - ( (LecturaAlta)lecturaActual).getConsumoHorasValle();
-	
+		float consumoValle = 0;
+		if(lecturaAnterior instanceof LecturaAlta && lecturaActual instanceof LecturaAlta) {
+			consumoValle = ( (LecturaAlta)lecturaActual).getConsumoHorasValle() - ( (LecturaAlta)lecturaAnterior).getConsumoHorasValle();
+		}
+		
+		return consumoValle;
 	}
 	
 	public float calcularConsumoHorasResto() {
+		float consumoResto = 0;
+		if(lecturaAnterior instanceof LecturaAlta && lecturaActual instanceof LecturaAlta) {
+			consumoResto = ( (LecturaAlta)lecturaActual).getConsumoHorasResto() - ( (LecturaAlta)lecturaAnterior).getConsumoHorasResto();
+		}
+		return consumoResto;
+	}
 	
-		return ( (LecturaAlta)lecturaActual).getConsumoHorasResto() - ( (LecturaAlta)lecturaActual).getConsumoHorasResto();
-	
+	@Override
+	public String toString() {
+		return "Factura [idFactura=" + idFactura + ", fecha=" + fecha + ", cliente=" + cliente + ", nroMedidor="
+				+ nroMedidor + ", lecturaAnterior=" + lecturaAnterior + ", lecturaActual=" + lecturaActual
+				+ ", listaItemFactura=" + listaItemFactura + "]";
 	}
 	
 	
