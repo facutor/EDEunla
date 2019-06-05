@@ -72,7 +72,8 @@ public class EscenarioCliente {
 		
 		try {
 			//Mandar excepcion al modificar un cliente que no existe
-			sistema.modificarClienteJuridico("hola","");
+			
+			sistema.modificarClienteJuridico("sdasd","");
 			
 		} catch (Exception e) {
 			// TODO: handle exception

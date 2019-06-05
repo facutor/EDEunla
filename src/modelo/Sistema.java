@@ -263,7 +263,7 @@ public class Sistema {
 			
 		}
 		else {
-			throw new Exception("Exepcion: La demanda "+demanda+"es incorrecta");
+			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
 		}
 		
 		return agregado;
@@ -626,7 +626,7 @@ public class Sistema {
 	
 	public void eliminarClienteFisico (String cuil)throws Exception {
 		
-		if(traerClienteFisico(cuil).getDemanda() != null) {
+		if(traerClienteFisico(cuil) != null) {
 			listaClientes.remove( traerClienteFisico(cuil) );
 		}
 		else throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere eliminar no existe");
@@ -635,7 +635,7 @@ public class Sistema {
 	
 	public void eliminarClienteJuridico (String cuit) throws Exception {
 		
-		if(traerClienteJuridico(cuit).getDemanda() !=  null) {
+		if(traerClienteJuridico(cuit) !=  null) {
 			listaClientes.remove( traerClienteJuridico(cuit) );
 		}
 		else {
@@ -771,7 +771,7 @@ public class Sistema {
 		
 	public void modificarClienteFisico(String cuil, String demanda) throws Exception {
 		
-		if(traerClienteFisico(cuil).getNombre() != null) {
+		if(traerClienteFisico(cuil) != null) {
 			traerClienteFisico(cuil).setDemanda(demanda);
 		}
 		else throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere modificar no existe");
@@ -779,7 +779,7 @@ public class Sistema {
 	
 	public void modificarClienteJuridico(String cuit, String demanda) throws Exception {
 		
-		if (traerClienteJuridico(cuit).getNombreEmpresa() != null) {
+		if (traerClienteJuridico(cuit) != null) {
 			traerClienteJuridico(cuit).setDemanda(demanda);
 		}
 		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
