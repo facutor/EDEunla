@@ -1,5 +1,7 @@
 package test;
 
+import javax.sound.midi.Soundbank;
+
 import modelo.Sistema;
 
 public class EscenarioCliente {
@@ -10,8 +12,9 @@ public class EscenarioCliente {
 		try {
 			sistema.agregarInspector(40667235, "Luis", "Rodriguez");
 			sistema.agregarInspector(39666666, "Jorge", "Perez");
-			sistema.agregarzona("Zona Sur", sistema.traerInspector(40667235));
-			sistema.agregarzona("Zona Norte", sistema.traerInspector(39666666));
+			sistema.agregarzona(0, "Zona Sur", sistema.traerInspector(40667235));
+			sistema.agregarzona(0, "Zona Norte", sistema.traerInspector(39666666));
+			
 			
 			// Agregamos Clientes
 			

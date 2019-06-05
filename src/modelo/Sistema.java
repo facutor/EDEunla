@@ -3,6 +3,7 @@ package modelo;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 
 import javax.swing.text.StyledEditorKit.ItalicAction;
@@ -223,227 +224,107 @@ public class Sistema {
 	
 	public boolean agregarClienteFisico(String demanda,String cuil,String apellido,String nombre, Zona zona)throws Exception{
 		int contador = 1;//se usar como generador de los id
-		boolean agregado = false;
 		
 		if( demanda.equals("Alta") || demanda.equals("ALTA") 
 				|| demanda.equals("Baja") || demanda.equals("BAJA") ) {
-		
-			if( !listaClientes.isEmpty() ) {
-				boolean existe = false;
-				
-				for (int i = 0; i < listaClientes.size() ; i++) {
-					if( listaClientes.get(i) instanceof ClienteFisico ) {
-						ClienteFisico cf = (ClienteFisico) listaClientes.get(i);
 			
-						if(cf.getCuil().equals(cuil)) {
-							existe = true;
-						}
-						
-					}
-					contador ++;
-				}
-				
-				if(!existe) {
-					
-					ClienteFisico cf = new ClienteFisico(contador, demanda, zona, cuil, apellido, nombre);
-					listaClientes.add(cf); 
-					agregado = true;
-				}
-				else {
-					throw new Exception("Excepcion: El cliente que desea agregar ya existe");
-				}
-				
+			if (traerClienteFisico(cuil)!=null) {
+				throw new Exception("El cliente con cuil "+cuil+" que quiere ingresar ya exite");
 			}
-			else {
-				
-				ClienteFisico cf = new ClienteFisico(contador, demanda, zona, cuil, apellido, nombre);
-				listaClientes.add(cf); 
-				agregado = true;
+			for (int i = 0; i < listaClientes.size(); i++) {
+				contador++;
 			}
-			
+			ClienteFisico cf = new ClienteFisico(contador, demanda, zona, cuil, apellido, nombre);
+			return listaClientes.add(cf);
 		}
 		else {
 			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
 		}
 		
-		return agregado;
+		
 	}
 
 	public boolean agregarClienteJuridico(String demanda,String cuit,String nombreEmpresa,Zona zona)throws Exception{
 		int contador = 1;//se usar como generador de los id
-		boolean agregado = false;
-		
+
 		if( demanda.equals("Alta") || demanda.equals("ALTA") 
 				|| demanda.equals("Baja") || demanda.equals("BAJA") ) {
 		
-			if( !listaClientes.isEmpty() ) {
-				boolean existe = false;
-				
-				for (int i = 0; i < listaClientes.size() ; i++) {
-					if(listaClientes.get(i) instanceof ClienteJuridico) {
-						ClienteJuridico cj= (ClienteJuridico) listaClientes.get(i);
-						if(cj.getCuit().equals(cuit)) {
-							existe=true;
-						}
-					}
-					contador ++;
-				}
-				
-				if(!existe) {
-					ClienteJuridico cj = new ClienteJuridico(contador, demanda, zona, cuit, nombreEmpresa);
-					listaClientes.add(cj);
-					agregado = true;
-				}
-				else {
-					throw new Exception("Excepcion: El cliente que desea agregar ya existe");
-				}
-				
+			if (traerClienteJuridico(cuit)!=null) throw new Exception("El cliente con cuit "+cuit+" que quiere agregar ya existe");
+		    for (int i = 0; i < listaClientes.size(); i++) {
+				contador++;
 			}
-			else {
-			
-				ClienteJuridico cj = new ClienteJuridico(contador, demanda, zona, cuit, nombreEmpresa);
-				listaClientes.add(cj);
-				agregado = true;
-			}
-			
+		    ClienteJuridico cj= new ClienteJuridico(contador, demanda, zona, cuit, nombreEmpresa);
+		    return listaClientes.add(cj);
 		}
 		else {
 			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
 		}
-		
-		return agregado;
 	}
 	
 	public boolean agregarMedidor(String domicilioMedidor,Cliente cliente,Tarifa tarifa) throws Exception{
-		boolean agregado = false;
+		boolean esBaja = false;
 		int contador = 1;
 		
-		if( !listaMedidores.isEmpty() ) {
-			boolean existe = false;
-			
-			for (int i = 0; i < listaMedidores.size() ; i++) {
-				if( listaMedidores.get(i).getDomicilioMedidor().equals(domicilioMedidor) ) {
-					existe = true;
-				}
-				contador ++;
+		if (traerMedidor(domicilioMedidor)!=null) throw new Exception("El medidor con domicilio "+domicilioMedidor+" que quiere agregar ya exite");
+	    
+		if (listaMedidores.isEmpty()==false) {
+			for (int i = 0; i < listaMedidores.size(); i++) {
+				contador++;
 			}
-			if( !existe ) {
-				if( cliente.getDemanda().equalsIgnoreCase("Alta") ) {
-					Medidor m = new Medidor(contador, domicilioMedidor, false, cliente,tarifa);
-					listaMedidores.add(m);
-				}
-				else {
-					Medidor m = new Medidor(contador, domicilioMedidor, true, cliente,tarifa);
-					listaMedidores.add(m);
-				}
-				agregado = true;
-			}
-			else {
-				throw new Exception("Excepcion: El medidor ingresado ya existe");
-			}
-		}
-		else {
-			
-			if( cliente.getDemanda().equals("Alta") ) {
-				Medidor m = new Medidor(contador, domicilioMedidor, false, cliente,tarifa);
-				listaMedidores.add(m);
-			}
-			else {
-				Medidor m = new Medidor(contador, domicilioMedidor, true, cliente,tarifa);
-				listaMedidores.add(m);
-			}
-			agregado = true;
 		}
 		
-		return agregado;
+		if (cliente.getDemanda().equalsIgnoreCase("Alta")) {
+			esBaja=false;
+		}
+		else if (cliente.getDemanda().equalsIgnoreCase("Baja")) {
+			esBaja=true;
+		}
+		Medidor medidor = new Medidor(contador, domicilioMedidor, esBaja, cliente, tarifa);
+		return listaMedidores.add(medidor);
+		
+		
 	}
 	
-	public boolean agregarzona(String zona, Inspector inspector) throws Exception {
-
-		boolean agregar=false, existe=false;
+	public boolean agregarzona(int idZona,String zona, Inspector inspector) throws Exception {
 		int c=1;
-		if (listaZonas.isEmpty()==false) {
-			for (int i = 0; i < listaZonas.size(); i++) {
-				if (listaZonas.get(i).getZona().equals(zona)) {
-					existe=true;
-				}
-				c++;
-			}
-			if (existe==false) {
-				Zona z = new Zona(c, zona, inspector);
-				listaZonas.add(z);
-				agregar=true;
-			}
-			else throw new Exception(zona+ " ya existe");
-		}
-		else {
-			Zona z = new Zona(c, zona,inspector);
-			listaZonas.add(z);
-			agregar=true;
-		}
-		return agregar;
+		if (traerZona(idZona)!=null) throw new Exception("La zona con id "+idZona+" que quiere ingresar ya existe");
+		
+		if (getListaZonas().isEmpty()==false) {
+			c=listaZonas.get(listaZonas.size()-1).getIdZona()+1;
+		}	
+		
+		Zona z= new Zona(c, zona, inspector);
+		return listaZonas.add(z);
 	}
 
 	public boolean agregarLecturaBaja(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumo)throws Exception {
-		boolean agregado = false;
-		int contador = 1;
-		
-		if( !listaLectura.isEmpty() ) {
-			boolean existe = false;
-			
-			for (int i = 0; i < listaLectura.size() ; i++) {
-				if( listaLectura.get(i).getFechaRegistro().equals(fechaRegistro) ) {
-					existe = true;
-				}
-				contador ++;
-			}
-			if( !existe ) {
-				LecturaBaja lb = new LecturaBaja(contador, inspector, fechaRegistro, medidor, consumo);
-				listaLectura.add(lb);
-				agregado = true;
-			}
-			else {
-				throw new Exception("Excepcion: La lectura ya existe");
+		int c=1;
+		if (traerLecturaBaja(fechaRegistro)!=null) throw new Exception("La lectura con fecha "+fechaRegistro+" que quiere ingresar ya exite");
+	    if (listaLectura.isEmpty()==false) {
+	    	for (int i = 0; i < listaLectura.size(); i++) {
+				c++;
 			}
 		}
-		else {
-			LecturaBaja lb = new LecturaBaja(contador, inspector, fechaRegistro, medidor, consumo);
-			listaLectura.add(lb);
-			agregado = true;
-		}
-		
-		return agregado;
+	    LecturaBaja lb= new LecturaBaja(c, inspector, fechaRegistro, medidor, consumo);
+	    return listaLectura.add(lb);
 	}
 	
 	public boolean agregarLecturaAlta(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto) throws Exception{
-		boolean agregado = false;
-		int contador = 1;
 		
-		if( !listaLectura.isEmpty() ) {
-			boolean existe = false;
-			
-			for (int i = 0; i < listaLectura.size() ; i++) {
-				if( listaLectura.get(i).getFechaRegistro().equals(fechaRegistro) ) {
-					existe = true;
-				}
-				contador ++;
-			}
-			if( !existe ) {
-				LecturaAlta la= new LecturaAlta(contador, inspector, fechaRegistro, medidor,consumoHorasPico, consumoHorasValle, consumoHorasResto);
-				listaLectura.add(la);
-				agregado = true;
-			}
-			else {
-				throw new Exception("Excepcion: La lectura ya existe");
+		int c = 1;
+		
+		if(traerLecturaAlta(fechaRegistro)!=null) throw new Exception("La lectura con fecha "+fechaRegistro+" que quiere agregar ya exite");
+	
+		if (listaLectura.isEmpty()) {
+			for (int i = 0; i < listaLectura.size(); i++) {
+				c++;
 			}
 		}
-		else {
-			LecturaAlta la= new LecturaAlta(contador, inspector, fechaRegistro, medidor,consumoHorasPico, consumoHorasValle, consumoHorasResto);
-			listaLectura.add(la);
-			agregado = true;
-		}
 		
-		return agregado;
+		LecturaAlta la = new LecturaAlta(c, inspector, fechaRegistro, medidor, consumoHorasPico, consumoHorasValle, consumoHorasResto);
+		return listaLectura.add(la);
+		
 	}
 
 	
@@ -503,11 +384,11 @@ public class Sistema {
 
 	}
 		
-	public Medidor traerMedidor(int idMedidor){
+	public Medidor traerMedidor(String domicilio){
 		Medidor dato=null;
 		int i=0;
 		while (dato==null&& i<listaMedidores.size()) {
-			if (listaMedidores.get(i).getIdMedidor()==idMedidor) {
+			if (listaMedidores.get(i).getDomicilioMedidor().equals(domicilio)) {
 				dato=listaMedidores.get(i);
 			}
 			i++;
@@ -643,13 +524,13 @@ public class Sistema {
 		}
 	}
 
-	public void eliminarMedidor(int idMedidor)throws Exception {
+	public void eliminarMedidor(String domicilioMedidor)throws Exception {
 		
-		if(traerMedidor(idMedidor).getCliente().getDemanda() != null) {
-			listaMedidores.remove( traerMedidor(idMedidor) );
+		if(traerMedidor(domicilioMedidor).getCliente().getDemanda() != null) {
+			listaMedidores.remove( traerMedidor(domicilioMedidor) );
 		}
 		else {
-			throw new Exception("Excepcion: El Medidor con id "+idMedidor+" que quiere eliminar no existe");
+			throw new Exception("Excepcion: El Medidor con domicilio"+domicilioMedidor+" que quiere eliminar no existe");
 		}
 	}
 
@@ -754,18 +635,18 @@ public class Sistema {
 		else throw new Exception("Excepcion: La zona con id "+idZona+" que quiere modificar no existe");
 	}
 	
-	public void modificarMedidor(int idMedidor, Cliente cliente) throws Exception {
+	public void modificarMedidor(String domicilioMedidor, Cliente cliente) throws Exception {
 	
-		if ( traerMedidor(idMedidor) != null) {
+		if ( traerMedidor(domicilioMedidor) != null) {
 			
 			if(cliente.getDemanda().equals("Alta") ) {
-				traerMedidor(idMedidor).setEsBaja(false);
+				traerMedidor(domicilioMedidor).setEsBaja(false);
 			}
 			else {
-				traerMedidor(idMedidor).setEsBaja(true);
+				traerMedidor(domicilioMedidor).setEsBaja(true);
 			}
 		}
-		else throw new Exception("Excepcion: El Medidor con "+idMedidor+" que quiere modificar no existe");
+		else throw new Exception("Excepcion: El Medidor con domicilio "+domicilioMedidor+" que quiere modificar no existe");
 		
 	}
 		

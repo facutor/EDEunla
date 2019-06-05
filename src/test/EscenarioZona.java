@@ -12,8 +12,8 @@ public class EscenarioZona {
 			sistema.agregarInspector(39666666, "Jorge", "Perez");
 			
 			/*********************************ALTA DE ZONAS*****************************/
-			sistema.agregarzona( "Zona Sur", sistema.traerInspector(40667235) );
-			sistema.agregarzona(" Zona Norte", sistema.traerInspector(39666666));
+			sistema.agregarzona(0, "Zona Sur", sistema.traerInspector(40667235) );
+			sistema.agregarzona(0, "Zona Norte", sistema.traerInspector(39666666));
 			
 			System.out.println("Antes de Realizar Altas Bajas y Modificacion de Zonas:");
 			for (int i = 0; i < sistema.getListaZonas().size() ; i++) {
