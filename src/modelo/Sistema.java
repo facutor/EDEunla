@@ -169,25 +169,31 @@ public class Sistema {
 		return listaItemFactura.add(itemFactura);
 	}
 	
-	public boolean agregarFactura(Lectura lectura,LocalDate fecha,Tarifa tarifa,List<ItemFactura> lItemFacturas) throws Exception {
+	public boolean agregarFactura(Lectura lecturaAnterior,Lectura lecturaActual,LocalDate fecha) throws Exception {
+		
+		if( lecturaActual.getMedidor().getIdMedidor() != lecturaAnterior.getMedidor().getIdMedidor() )throw new Exception("Execpion: La Lecturas no tienen el mismo Medidor");
+		
+		Period periodo = Period.between(lecturaAnterior.getFechaRegistro() , lecturaActual.getFechaRegistro() );
+		if(periodo.getMonths() != 2) throw new Exception("Excepcion: Las Lecturas no tienen una diferencia de 2 meses");
+		
 		int id = 1;//generador del id de factura
-		if (traerFactura(lectura)!=null) throw new Exception("Excepcion: La factura ingresada ya existe");
 		if( !listaFacturas.isEmpty() ) {
 			for (int i = 0; i < listaFacturas.size() ; i++) {
 				id++;
 			}
 		}
+		//NOTA: un medidor va a pertenecer a un solo cliente y logicamente las lecturas que paso son de un mismo medidor 
 		String cliente = "";
 		
-		 if ( lectura.getMedidor().getCliente() instanceof ClienteFisico ) {
-			 cliente = ( (ClienteFisico)lectura.getMedidor().getCliente() ).getApellido()+
-					 " "+( (ClienteFisico)lectura.getMedidor().getCliente() ).getNombre(); //nombre del cliente fisico
+		 if ( lecturaActual.getMedidor().getCliente() instanceof ClienteFisico ) {
+			 cliente = ( (ClienteFisico)lecturaActual.getMedidor().getCliente() ).getApellido()+
+					 " "+( (ClienteFisico)lecturaActual.getMedidor().getCliente() ).getNombre(); //nombre del cliente fisico
 		 }
-		 else if( lectura.getMedidor().getCliente() instanceof ClienteJuridico ) {
-					cliente = ( (ClienteJuridico)lectura.getMedidor().getCliente() ).getNombreEmpresa() ;//razon social/nombre de la empresa (cliente juridico)
+		 else if( lecturaActual.getMedidor().getCliente() instanceof ClienteJuridico ) {
+					cliente = ( (ClienteJuridico)lecturaActual.getMedidor().getCliente() ).getNombreEmpresa() ;//razon social/nombre de la empresa (cliente juridico)
 		 }
 		 
-		Factura f = new Factura(id, cliente , lectura, fecha , lectura.getMedidor().getIdMedidor() , tarifa, lItemFacturas);
+		Factura f = new Factura(id, fecha, cliente, lecturaActual.getMedidor().getIdMedidor() , lecturaAnterior, lecturaActual);
 		return listaFacturas.add(f);
 	}
 	
@@ -308,7 +314,7 @@ public class Sistema {
 		return agregado;
 	}
 	
-	public boolean agregarMedidor(String domicilioMedidor,Cliente cliente) throws Exception{
+	public boolean agregarMedidor(String domicilioMedidor,Cliente cliente,Tarifa tarifa) throws Exception{
 		boolean agregado = false;
 		int contador = 1;
 		
@@ -323,11 +329,11 @@ public class Sistema {
 			}
 			if( !existe ) {
 				if( cliente.getDemanda().equalsIgnoreCase("Alta") ) {
-					Medidor m = new Medidor(contador, domicilioMedidor, false, cliente);
+					Medidor m = new Medidor(contador, domicilioMedidor, false, cliente,tarifa);
 					listaMedidores.add(m);
 				}
 				else {
-					Medidor m = new Medidor(contador, domicilioMedidor, true, cliente);
+					Medidor m = new Medidor(contador, domicilioMedidor, true, cliente,tarifa);
 					listaMedidores.add(m);
 				}
 				agregado = true;
@@ -339,11 +345,11 @@ public class Sistema {
 		else {
 			
 			if( cliente.getDemanda().equals("Alta") ) {
-				Medidor m = new Medidor(contador, domicilioMedidor, false, cliente);
+				Medidor m = new Medidor(contador, domicilioMedidor, false, cliente,tarifa);
 				listaMedidores.add(m);
 			}
 			else {
-				Medidor m = new Medidor(contador, domicilioMedidor, true, cliente);
+				Medidor m = new Medidor(contador, domicilioMedidor, true, cliente,tarifa);
 				listaMedidores.add(m);
 			}
 			agregado = true;
@@ -409,7 +415,7 @@ public class Sistema {
 		return agregado;
 	}
 	
-	public boolean agregarLecturaAlta(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto,String tipoTension) throws Exception{
+	public boolean agregarLecturaAlta(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto) throws Exception{
 		boolean agregado = false;
 		int contador = 1;
 		
@@ -423,7 +429,7 @@ public class Sistema {
 				contador ++;
 			}
 			if( !existe ) {
-				LecturaAlta la= new LecturaAlta(contador, inspector, fechaRegistro, medidor, tipoTension,consumoHorasPico, consumoHorasValle, consumoHorasResto);
+				LecturaAlta la= new LecturaAlta(contador, inspector, fechaRegistro, medidor,consumoHorasPico, consumoHorasValle, consumoHorasResto);
 				listaLectura.add(la);
 				agregado = true;
 			}
@@ -432,7 +438,7 @@ public class Sistema {
 			}
 		}
 		else {
-			LecturaAlta la= new LecturaAlta(contador, inspector, fechaRegistro, medidor,tipoTension,consumoHorasPico, consumoHorasValle, consumoHorasResto);
+			LecturaAlta la= new LecturaAlta(contador, inspector, fechaRegistro, medidor,consumoHorasPico, consumoHorasValle, consumoHorasResto);
 			listaLectura.add(la);
 			agregado = true;
 		}
@@ -626,11 +632,11 @@ public class Sistema {
 	}
 	
 	
-	public Factura traerFactura(Lectura lectura) {
+	public Factura traerFactura(int idFactura) {
 		Factura dato = null;
 		int i=0;
 		while (dato==null && i<listaFacturas.size()) {
-			if ( listaFacturas.get(i).getLectura().equals(lectura)) {
+			if ( listaFacturas.get(i).getIdFactura() == idFactura) {
 				dato=listaFacturas.get(i);
 			}
 			i++;
@@ -681,7 +687,6 @@ public class Sistema {
 		}
 	}
 
-	
 	public void eliminarMedidor(int idMedidor)throws Exception {
 		
 		if(traerMedidor(idMedidor).getCliente().getDemanda() != null) {
@@ -692,7 +697,6 @@ public class Sistema {
 		}
 	}
 
-	
 	public void eliminarZona(int idZona) throws Exception {
 		
 		if (traerZona(idZona).getZona()!=null) {
@@ -701,7 +705,6 @@ public class Sistema {
 		else throw new Exception("Excepcion: La Zona con id "+idZona+" que quiere eliminar no existe");
 	}
 	
-
 	public void eliminarLecturaAlta(LocalDate fechaRegistro) throws Exception{		
 		
 		if(traerLecturaAlta(fechaRegistro).getFechaRegistro() != null) {
@@ -712,7 +715,6 @@ public class Sistema {
 		}
 	}
 	
-
 	public void eliminarLecturaBaja(LocalDate fechaRegistro) throws Exception{
 		
 		if(traerLecturaBaja(fechaRegistro).getFechaRegistro() != null) {
@@ -736,9 +738,9 @@ public class Sistema {
 		}
 		else throw new Exception("Excepcion: La tarifa ingresa no existe");
 	}
-	public void eliminarFactura(Lectura lectura) throws Exception {
-		if (traerFactura(lectura)!=null) {
-			listaFacturas.remove(traerFactura(lectura));
+	public void eliminarFactura(int idFactura) throws Exception {
+		if (traerFactura(idFactura)!=null) {
+			listaFacturas.remove(traerFactura(idFactura));
 		}
 		else {
 			throw new Exception("Exception: La factura ingresada no existe");
@@ -827,9 +829,6 @@ public class Sistema {
 		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
 	}
 	
-	
-	
 
-	
 	
 }

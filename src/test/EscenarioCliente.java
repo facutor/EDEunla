@@ -51,6 +51,7 @@ public class EscenarioCliente {
 		}
 		
 		// Posibles Excepciones
+		System.out.println("\n Excepciones: ");
 		try {
 			//Mandar Excepcion al agregar un cliente que ya existe
 			sistema.agregarClienteFisico("Alta", "20401257257", "Rivera", "Tomas", sistema.traerZona(2));

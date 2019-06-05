@@ -5,10 +5,10 @@ import java.time.Period;
 
 
 public class LecturaBaja extends Lectura {
-	private int consumo;
+	private float consumo;
 
 	public LecturaBaja(int idLectura, Inspector inspector, LocalDate fechaRegistro, Medidor medidor,
-			int consumo) {
+			float consumo) {
 		super(idLectura, inspector, fechaRegistro, medidor);
 		this.consumo = consumo;
 	}
@@ -18,14 +18,12 @@ public class LecturaBaja extends Lectura {
 	}
 	
 	/******************getters y setters********************/
-	public int getConsumo() {
+	public float getConsumo() {
 		return consumo;
 	}
 	public void setConsumo(int consumo) {
 		this.consumo = consumo;
 	}
-	
-	
 	
 	
 

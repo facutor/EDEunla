@@ -7,15 +7,16 @@ public class Medidor {
 	private String domicilioMedidor;
 	private boolean esBaja;
 	private Cliente cliente;
+	private Tarifa tarifa;
 
-	public Medidor(int idMedidor, String domicilioMedidor, boolean esBaja, Cliente cliente) {
+	public Medidor(int idMedidor, String domicilioMedidor, boolean esBaja, Cliente cliente, Tarifa tarifa) {
 		super();
 		this.idMedidor = idMedidor;
 		this.domicilioMedidor = domicilioMedidor;
 		this.esBaja = esBaja;
 		this.cliente = cliente;
+		this.tarifa = tarifa;
 	}
-
 	//constructor vacio
 	public Medidor(){
 	}
@@ -50,6 +51,14 @@ public class Medidor {
 		this.cliente = cliente;
 	}
 
+	
+	public Tarifa getTarifa() {
+		return tarifa;
+	}
+	public void setTarifa(Tarifa tarifa) {
+		this.tarifa = tarifa;
+	}
+	
 	/*****************************to String**********************************/
 	public String toString() {
 		if(esBaja) {
