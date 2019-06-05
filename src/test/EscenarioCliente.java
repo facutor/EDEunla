@@ -51,6 +51,7 @@ public class EscenarioCliente {
 		}
 		
 		// Posibles Excepciones
+		System.out.println("\n Excepciones: ");
 		try {
 			System.out.println("\n");
 			//Mandar Excepcion al agregar un cliente que ya existe
