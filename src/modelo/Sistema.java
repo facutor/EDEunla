@@ -473,69 +473,46 @@ public class Sistema {
 	}
 	
 	public ClienteFisico traerClienteFisico(String cuil ){
-		boolean existe = false;
-		int i;
-		
-		for (i = 0; i < listaClientes.size() ; i++) {
-			if(listaClientes.get(i) instanceof ClienteFisico) {
-				ClienteFisico cf = (ClienteFisico)listaClientes.get(i);
-			  	
-				if(cf.getCuil().equals(cuil)) {
-					existe = true;
-				  	break;
-			  	}
-				
+		ClienteFisico dato=null;
+		int i=0;
+		while (dato==null&&i<listaClientes.size()) {
+			if (listaClientes.get(i) instanceof ClienteFisico) {
+				ClienteFisico cf =(ClienteFisico) listaClientes.get(i);
+				if (cf.getCuil().equals(cuil)) {
+					dato= (ClienteFisico) listaClientes.get(i);
+				}
 			}
+			i++;
 		}
-		if(existe) {
-			return (ClienteFisico) listaClientes.get(i);
-		}
-		else {
-			ClienteFisico cf = new ClienteFisico();
-			return cf;
-		}
+		return dato;
 	}
 	
 	public ClienteJuridico traerClienteJuridico(String cuit) {
-		boolean existe=false;
+		ClienteJuridico dato=null;
 		int i=0;
-		
-		for ( i = 0; i < listaClientes.size(); i++) {
-			
+		while (dato==null&&i<listaClientes.size()) {
 			if (listaClientes.get(i) instanceof ClienteJuridico) {
-				ClienteJuridico cj=(ClienteJuridico) listaClientes.get(i);
+				ClienteJuridico cj =(ClienteJuridico) listaClientes.get(i);
 				if (cj.getCuit().equals(cuit)) {
-					existe=true;
-					break;
+					dato = (ClienteJuridico) listaClientes.get(i);
 				}
 			}
+			i++;
 		}
-		if (existe) {
-			return (ClienteJuridico) listaClientes.get(i);
-		}
-		else {
-			ClienteJuridico cj = new ClienteJuridico();
-			return cj;
-		}
+		return dato;
+
 	}
 		
 	public Medidor traerMedidor(int idMedidor){
-		boolean existe = false;
-		int i;
-		
-		for (i = 0; i < listaMedidores.size(); i++) {
-			if(listaMedidores.get(i).getIdMedidor() == idMedidor ) {
-				existe = true;
-				break;
+		Medidor dato=null;
+		int i=0;
+		while (dato==null&& i<listaMedidores.size()) {
+			if (listaMedidores.get(i).getIdMedidor()==idMedidor) {
+				dato=listaMedidores.get(i);
 			}
+			i++;
 		}
-		if( existe ) {
-			return listaMedidores.get(i);
-		}
-		else {
-			Medidor m = new Medidor();
-			return m;
-		}
+		return dato;
 	}
 
 	public Zona traerZona(int idZona) {
