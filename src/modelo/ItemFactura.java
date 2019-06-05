@@ -3,17 +3,17 @@ package modelo;
 public class ItemFactura {
 	private long idItemFactura ;
 	private String detalle;
-	private float precioUnitario;
-	private int cantidad;
 	private String unidad;
-	
-	public ItemFactura(long idItemFactura, String detalle, float precioUnitario, int cantidad, String unidad) {
+	private int cantidad;
+	private float precioUnitario;
+
+	public ItemFactura(long idItemFactura, String detalle, String unidad, int cantidad, float precioUnitario) {
 		super();
 		this.idItemFactura = idItemFactura;
 		this.detalle = detalle;
-		this.precioUnitario = precioUnitario;
-		this.cantidad = cantidad;
 		this.unidad = unidad;
+		this.cantidad = cantidad;
+		this.precioUnitario = precioUnitario;
 	}
 
 	public long getIdItemFactura() {

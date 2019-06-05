@@ -162,9 +162,9 @@ public class Sistema {
 		return true;
 	}
 	/********************************************Agregar metodos*****************************/
-	public boolean agregarItemFactura(long idItemFactura,String detalle,float precioUnitario,int cantidad,String unidad) {
+	public boolean agregarItemFactura(long idItemFactura,String detalle,String unidad,float precioUnitario,int cantidad) {
 		
-		ItemFactura itemFactura = new ItemFactura(idItemFactura, detalle, precioUnitario, cantidad, unidad);
+		ItemFactura itemFactura = new ItemFactura(idItemFactura, detalle, unidad, cantidad, precioUnitario);
 		return listaItemFactura.add(itemFactura);
 	}
 	
@@ -648,9 +648,25 @@ public class Sistema {
 		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
 	}
 	/**********************************Calcular Consumos********************************/
+	public float calcularConsumoBaja(LecturaBaja lecturaAnterior , LecturaBaja lecturaActual) {
+		float consumoBajo = 0;
+		if(lecturaAnterior instanceof LecturaBaja && lecturaActual instanceof LecturaBaja) {
+			consumoBajo=( (LecturaBaja) lecturaActual).getConsumo() - ( (LecturaBaja) lecturaAnterior).getConsumo();
+		}
+		return consumoBajo ;
+	}
+	
+	public float calcularConsumoAlto(LecturaAlta lecturaAnterior,LecturaAlta lecturaActual) {
+		float consumoPico = 0;
+		if(lecturaAnterior instanceof LecturaAlta && lecturaActual instanceof LecturaAlta) {
+			consumoPico = ( (LecturaAlta)lecturaActual).getConsumoHorasPico() - ( (LecturaAlta)lecturaAnterior).getConsumoHorasPico();
+		}
+		return consumoPico;
+	}
+	
 	public float calcularPrecioBaja(Factura factura,ItemFactura cargoFijo,ItemFactura cargoVariable ) {
 		
-		return cargoFijo.getPrecioUnitario() + factura.calcularConsumoBajo()*cargoVariable.getPrecioUnitario();
+		return (float)cargoFijo.getPrecioUnitario() + factura.calcularConsumoBajo()*cargoVariable.getPrecioUnitario();
 	}
 	
 	public float calcularPrecioAlta(Factura factura,ItemFactura cargoFijo,ItemFactura cargoVarible) {
