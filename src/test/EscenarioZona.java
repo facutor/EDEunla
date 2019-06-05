@@ -18,7 +18,7 @@ public class EscenarioZona {
 			System.out.println("Antes de Realizar Altas Bajas y Modificacion de Zonas:");
 			for (int i = 0; i < sistema.getListaZonas().size() ; i++) {
 				System.out.println(sistema.getListaZonas().get(i));
-				System.out.println("**************************************");
+				System.out.println("**************************************************************");
 			}
 			
 			/*************************************MODIFICACION DE ZONAS********************************/
@@ -31,7 +31,7 @@ public class EscenarioZona {
 			System.out.println("\n\nDespues de realizar Altas,Bajas,Modificacion de Zonas:");
 			for (int i = 0; i < sistema.getListaZonas().size() ; i++) {
 				System.out.println(sistema.getListaZonas().get(i));
-				System.out.println("**************************************");
+				System.out.println("***************************************************************");
 			}
 			
 		}catch(Exception e) {
