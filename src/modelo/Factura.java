@@ -125,6 +125,10 @@ public class Factura {
 		return consumoResto;
 	}
 	
+	public float calcularConsumoTotalAlta() {
+		return calcularConsumoHorasPico() + calcularConsumoHorasResto() + calcularConsumoHorasValle();
+	}
+	
 	@Override
 	public String toString() {
 		return "Factura [idFactura=" + idFactura + ", fecha=" + fecha + ", cliente=" + cliente + ", nroMedidor="

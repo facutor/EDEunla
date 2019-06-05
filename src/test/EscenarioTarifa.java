@@ -42,7 +42,6 @@ public class EscenarioTarifa {
 			System.out.println(e.getMessage());
 		}
 		
-
 	}
 
 }

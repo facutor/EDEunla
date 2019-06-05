@@ -55,13 +55,11 @@ public class EscenarioFactura {
 		/***********************Factura Alta Demanda*****************************/
 		
 		List<ItemFactura> listItemFacturas1 = new ArrayList<ItemFactura>();
-		ItemFactura if1 = new ItemFactura(1111, "CargoFijo", 10000, 10, "kw/h");
-		ItemFactura if2 = new ItemFactura(2222, "CargoVariable", 100000, 5, "kw/h");
+		sistema.agregarItemFactura(1111, "CargoFijo", 10000, 10, "kw/h");
+		sistema.agregarItemFactura(2222, "CargoVariable", 100000, 5, "kw/h");
+		
 		listItemFacturas1.add(if1);
 		listItemFacturas1.add(if2);
-
-		sistema.agregarFactura(sistema.traerLecturaAlta(fecha1), sistema.traerLecturaAlta(fecha2), LocalDate.of(2019, 10, 10),listItemFacturas1);
-		System.out.println( sistema.traerFactura(1).calcularConsumoHorasValle());
 		
 		/******************Lectura Baja*************************/
 		LocalDate fecha3 = LocalDate.of(2019, 4, 10);

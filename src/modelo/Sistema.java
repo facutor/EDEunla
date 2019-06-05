@@ -96,8 +96,6 @@ public class Sistema {
 	public void setListaItemFactura(List<ItemFactura> listaItemFactura) {
 		this.listaItemFactura = listaItemFactura;
 	}
-	
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -164,7 +162,7 @@ public class Sistema {
 		return true;
 	}
 	/********************************************Agregar metodos*****************************/
-	public boolean agregarItemFactura(long idItemFactura,String detalle,float precioUnitario,int cantidad,String unidad,List<ItemFactura> lisItemFacturas) {
+	public boolean agregarItemFactura(long idItemFactura,String detalle,float precioUnitario,int cantidad,String unidad) {
 		
 		ItemFactura itemFactura = new ItemFactura(idItemFactura, detalle, precioUnitario, cantidad, unidad);
 		return listaItemFactura.add(itemFactura);
@@ -184,8 +182,7 @@ public class Sistema {
 			}
 		}
 		//NOTA: un medidor va a pertenecer a un solo cliente y logicamente las lecturas que paso son de un mismo medidor 
-		String cliente = "";
-		
+		String cliente = "";	
 		 if ( lecturaActual.getMedidor().getCliente() instanceof ClienteFisico ) {
 			 cliente = ( (ClienteFisico)lecturaActual.getMedidor().getCliente() ).getApellido()+
 					 " "+( (ClienteFisico)lecturaActual.getMedidor().getCliente() ).getNombre(); //nombre del cliente fisico
@@ -206,25 +203,20 @@ public class Sistema {
 	}
 	
 	public boolean agregarInspector(long dni,String nombre,String apellido) throws Exception{
-		
-		if(traerInspector(dni) != null ) {
-			throw new Exception("Excepcion: El Inspector ya existe");
-		}
-		
 		int id = 1; //generador de id para inspector
+		if(traerInspector(dni) != null )throw new Exception("Excepcion: El Inspector ya existe");
+		
 		if( !listaInspector.isEmpty() ) {
 			for (int i = 0; i < listaInspector.size() ; i++) {
 				id++;
 			}
 		}
 		Inspector inspector = new Inspector(id, apellido, nombre, dni);
-		
 		return listaInspector.add(inspector);
 	}
 	
 	public boolean agregarClienteFisico(String demanda,String cuil,String apellido,String nombre, Zona zona)throws Exception{
 		int contador = 1;//se usar como generador de los id
-		
 		if( demanda.equals("Alta") || demanda.equals("ALTA") 
 				|| demanda.equals("Baja") || demanda.equals("BAJA") ) {
 			
@@ -240,8 +232,6 @@ public class Sistema {
 		else {
 			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
 		}
-		
-		
 	}
 
 	public boolean agregarClienteJuridico(String demanda,String cuit,String nombreEmpresa,Zona zona)throws Exception{
@@ -273,7 +263,6 @@ public class Sistema {
 				contador++;
 			}
 		}
-		
 		if (cliente.getDemanda().equalsIgnoreCase("Alta")) {
 			esBaja=false;
 		}
@@ -282,19 +271,16 @@ public class Sistema {
 		}
 		Medidor medidor = new Medidor(contador, domicilioMedidor, esBaja, cliente, tarifa);
 		return listaMedidores.add(medidor);
-		
-		
 	}
 	
 	public boolean agregarzona(int idZona,String zona, Inspector inspector) throws Exception {
-		int c=1;
 		if (traerZona(idZona)!=null) throw new Exception("La zona con id "+idZona+" que quiere ingresar ya existe");
+		idZona = 1;
 		
 		if (getListaZonas().isEmpty()==false) {
-			c=listaZonas.get(listaZonas.size()-1).getIdZona()+1;
+			idZona=listaZonas.get(listaZonas.size()-1).getIdZona()+1;
 		}	
-		
-		Zona z= new Zona(c, zona, inspector);
+		Zona z= new Zona(idZona, zona, inspector);
 		return listaZonas.add(z);
 	}
 
@@ -311,9 +297,7 @@ public class Sistema {
 	}
 	
 	public boolean agregarLecturaAlta(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto) throws Exception{
-		
 		int c = 1;
-		
 		if(traerLecturaAlta(fechaRegistro)!=null) throw new Exception("La lectura con fecha "+fechaRegistro+" que quiere agregar ya exite");
 	
 		if (listaLectura.isEmpty()) {
@@ -324,9 +308,7 @@ public class Sistema {
 		
 		LecturaAlta la = new LecturaAlta(c, inspector, fechaRegistro, medidor, consumoHorasPico, consumoHorasValle, consumoHorasResto);
 		return listaLectura.add(la);
-		
 	}
-
 	
 	public boolean agregarTarifaBaja(String servicio, List<DetalleBaja> listaDetalle) throws Exception {
 		if (traerTarifaBaja(servicio)!= null) {
@@ -636,7 +618,7 @@ public class Sistema {
 	}
 	
 	public void modificarMedidor(String domicilioMedidor, Cliente cliente) throws Exception {
-	
+		
 		if ( traerMedidor(domicilioMedidor) != null) {
 			
 			if(cliente.getDemanda().equals("Alta") ) {
@@ -665,7 +647,26 @@ public class Sistema {
 		}
 		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
 	}
+	/**********************************Calcular Consumos********************************/
+	public float calcularPrecioBaja(Factura factura,ItemFactura cargoFijo,ItemFactura cargoVariable ) {
+		
+		return cargoFijo.getPrecioUnitario() + factura.calcularConsumoBajo()*cargoVariable.getPrecioUnitario();
+	}
 	
-
+	public float calcularPrecioAlta(Factura factura,ItemFactura cargoFijo,ItemFactura cargoVarible) {
+		float precioAlta = 0;
+		String tipoTension = ( (TarifaAlta) factura.getLecturaActual().getMedidor().getTarifa() ).getTensionContratada();
+		//SUPONGAMOS QUE SI LA TESNION ES: AT=$5000 , MT=$2500 , BT=$1250 
+		if(tipoTension.equalsIgnoreCase("AT")) precioAlta = cargoFijo.getPrecioUnitario() +
+				factura.calcularConsumoTotalAlta()*cargoVarible.getPrecioUnitario() + 5000;
+		
+		if(tipoTension.equalsIgnoreCase("MT")) precioAlta = cargoFijo.getPrecioUnitario() +
+				factura.calcularConsumoTotalAlta()*cargoVarible.getPrecioUnitario() + 2500;
+		
+		if(tipoTension.equalsIgnoreCase("BT")) precioAlta = cargoFijo.getPrecioUnitario() +
+				factura.calcularConsumoTotalAlta()*cargoVarible.getPrecioUnitario() + 1250;
+		
+		return precioAlta;
+	}
 	
 }
