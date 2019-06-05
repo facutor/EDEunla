@@ -52,6 +52,7 @@ public class EscenarioCliente {
 		
 		// Posibles Excepciones
 		try {
+			System.out.println("\n");
 			//Mandar Excepcion al agregar un cliente que ya existe
 			sistema.agregarClienteFisico("Alta", "20401257257", "Rivera", "Tomas", sistema.traerZona(2));
 			sistema.agregarClienteJuridico("Alta", "20458994561", "Rodriguez Hermanos S.A", sistema.traerZona(1));
@@ -79,6 +80,13 @@ public class EscenarioCliente {
 			System.out.println(e.getMessage());
 		}
 		
+		try {
+			//Mandar excepcion al agregar un cliente con una demana incorrecta
+			sistema.agregarClienteFisico("hola", "456879879", "Gomez", "Raul", sistema.traerZona(1));
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
 		
 		
 		
