@@ -1,7 +1,5 @@
 package test;
 
-import javax.sound.midi.Soundbank;
-
 import modelo.Sistema;
 
 public class EscenarioCliente {

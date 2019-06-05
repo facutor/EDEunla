@@ -516,65 +516,45 @@ public class Sistema {
 	}
 
 	public Zona traerZona(int idZona) {
-		boolean existe=false;
 		int i=0;
-		for ( i = 0; i < listaZonas.size(); i++) {
-			if (listaZonas.get(i).getIdZona()==idZona) {
-				existe=true;
-				break;
+		Zona zona = null;
+		while(zona == null && i< listaZonas.size() ) {
+			if(listaZonas.get(i).getIdZona() == idZona) {
+				zona = listaZonas.get(i);
 			}
+			i++;
 		}
-		if (existe==true) {
-			return listaZonas.get(i);
-		}
-		else {
-			Zona z = new Zona();
-			return z;
-		}
+		return zona;
 	}
 	
 	public LecturaBaja traerLecturaBaja(LocalDate fechaRegistro) {
-		boolean existe = false;
-		int i;
+		int i = 0;
+		LecturaBaja lecturaBaja = null;
 		
-		for (i = 0; i < listaLectura.size() ; i++) {
-			if( listaLectura.get(i) instanceof LecturaBaja ) {
-				
-				if(listaLectura.get(i).getFechaRegistro().equals(fechaRegistro) ) {
-					existe = true;
-					break;
+		while(lecturaBaja == null && i < listaLectura.size() ) {
+			if(listaLectura.get(i) instanceof LecturaBaja) {
+				if( ((LecturaBaja)listaLectura.get(i)).getFechaRegistro().equals(fechaRegistro) ) {
+					lecturaBaja = ((LecturaBaja)listaLectura.get(i));
 				}
 			}
+			i++;
 		}
-		if(existe) {
-			return ( (LecturaBaja)listaLectura.get(i) );
-		}
-		else {
-			LecturaBaja lb = new LecturaBaja();
-			return lb;
-		}
+		return lecturaBaja;
 	}
 	
 	public LecturaAlta traerLecturaAlta(LocalDate fechaRegistro) {
-		boolean existe = false;
-		int i;
+		int i = 0;
+		LecturaAlta lecturaAlta = null;
 		
-		for (i = 0; i < listaLectura.size() ; i++) {				
-			if(listaLectura.get(i) instanceof LecturaAlta ) {
-				
-				if(listaLectura.get(i).getFechaRegistro().equals(fechaRegistro)) {
-					existe = true;
-					break;
+		while(lecturaAlta == null && i < listaLectura.size() ) {
+			if(listaLectura.get(i) instanceof LecturaAlta) {
+				if( ((LecturaAlta)listaLectura.get(i)).getFechaRegistro().equals(fechaRegistro) ) {
+					lecturaAlta = ((LecturaAlta)listaLectura.get(i));
 				}
 			}
+			i++;
 		}
-		if(existe) {
-			return ( (LecturaAlta)listaLectura.get(i) );
-		}
-		else {
-			LecturaAlta la = new LecturaAlta();
-			return la;
-		}
+		return lecturaAlta;
 	}
 	
 	public TarifaBaja traerTarifaBaja(String servicio) {
@@ -607,8 +587,7 @@ public class Sistema {
 		}
 		return dato;	
 	}
-	
-	
+		
 	public Factura traerFactura(int idFactura) {
 		Factura dato = null;
 		int i=0;
