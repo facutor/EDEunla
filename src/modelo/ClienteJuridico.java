@@ -33,10 +33,10 @@ public class ClienteJuridico extends Cliente{
 			this.nombreEmpresa = nombreEmpresa;
 		}
 		
-		/***************************************************************************/
+		@Override
 		public String toString() {
-			return "ID: " + super.getIdCliente()+"\tDemanda: "+super.getDemanda()
-			+"\nCuit: "+cuit+"\tEmpresa: "+nombreEmpresa;
+			return "ClienteJuridico [cuit=" + cuit + ", nombreEmpresa=" + nombreEmpresa + "]";
 		}
+		
 		
 }

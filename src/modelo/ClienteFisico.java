@@ -38,9 +38,9 @@ public class ClienteFisico extends Cliente{
 		this.nombre = nombre;
 	}
 	
-	/*********************************************************************/
+	@Override
 	public String toString() {
-		return "ID: "+super.getIdCliente()+"\tDemanda: "+super.getDemanda()
-		+"\nCUIL: "+cuil+"\tApellido y Nombre: "+apellido+" "+nombre;
+		return "ClienteFisico [cuil=" + cuil + ", apellido=" + apellido + ", nombre=" + nombre + "]";
 	}
+	
 }

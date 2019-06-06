@@ -78,26 +78,22 @@ public class Factura {
 		this.lecturaActual = lecturaActual;
 	}
 
-	
-	/**********************************************************************************/
 	public float calcularTotal() {
 		float total = 0;
 		
 		for (int i = 0; i < listaItemFactura.size() ; i++) {
 			total += listaItemFactura.get(i).calcularSubtotal();
 		}
-		
 		return total;
 	}
-	
+	/**************************Metodos Calcular Consumos***************************/
 	public float calcularConsumoBajo() {
-		
 		float consumoBajo = 0;
+		
 		if(lecturaAnterior instanceof LecturaBaja && lecturaActual instanceof LecturaBaja) {
 			consumoBajo=( (LecturaBaja) lecturaActual).getConsumo() - ( (LecturaBaja) lecturaAnterior).getConsumo();
 		}
 		return consumoBajo ;
-	
 	}
 	
 	public float calcularConsumoHorasPico() {
@@ -126,7 +122,12 @@ public class Factura {
 	}
 	
 	public float calcularConsumoTotalAlta() {
-		return calcularConsumoHorasPico() + calcularConsumoHorasResto() + calcularConsumoHorasValle();
+		
+		return calcularConsumoHorasPico()+ calcularConsumoHorasResto() + calcularConsumoHorasValle();
+	}
+	
+	public float calcularConsumoTotal() {
+		return calcularConsumoBajo() + calcularConsumoTotalAlta();
 	}
 	
 	@Override
@@ -136,5 +137,5 @@ public class Factura {
 				+ ", listaItemFactura=" + listaItemFactura + "]";
 	}
 	
-	
+
 }

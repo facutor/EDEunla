@@ -22,8 +22,6 @@ public class Sistema {
 	List<Factura> listaFacturas;
 	List<ItemFactura> listaItemFactura;
 	
-	
-	
 	public Sistema() {
 		super();
 		this.listaClientes = new ArrayList<Cliente>();
@@ -162,7 +160,7 @@ public class Sistema {
 		return true;
 	}
 	/********************************************Agregar metodos*****************************/
-	public boolean agregarItemFactura(long idItemFactura,String detalle,String unidad,float precioUnitario,int cantidad) {
+	public boolean agregarItemFactura(long idItemFactura,String detalle,String unidad,float precioUnitario,float cantidad) {
 		
 		ItemFactura itemFactura = new ItemFactura(idItemFactura, detalle, unidad, cantidad, precioUnitario);
 		return listaItemFactura.add(itemFactura);
@@ -647,7 +645,8 @@ public class Sistema {
 		}
 		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
 	}
-	/**********************************Calcular Consumos********************************/
+	
+	/***********************************************Calcular Consumos*********************************************/
 	public float calcularConsumoBaja(LecturaBaja lecturaAnterior , LecturaBaja lecturaActual) {
 		float consumoBajo = 0;
 		if(lecturaAnterior instanceof LecturaBaja && lecturaActual instanceof LecturaBaja) {
@@ -656,7 +655,7 @@ public class Sistema {
 		return consumoBajo ;
 	}
 	
-	public float calcularConsumoAlto(LecturaAlta lecturaAnterior,LecturaAlta lecturaActual) {
+	public float calcularConsumoAlta(LecturaAlta lecturaAnterior,LecturaAlta lecturaActual) {
 		float consumoPico = 0;
 		if(lecturaAnterior instanceof LecturaAlta && lecturaActual instanceof LecturaAlta) {
 			consumoPico = ( (LecturaAlta)lecturaActual).getConsumoHorasPico() - ( (LecturaAlta)lecturaAnterior).getConsumoHorasPico();
@@ -664,11 +663,42 @@ public class Sistema {
 		return consumoPico;
 	}
 	
+	//punto 13
+	public float calcularConsumoTarifaBajaTotal(Tarifa tarifa,LocalDate fehcaInicio,LocalDate fechaFin) {
+		float total = 0;
+		if(tarifa != null && tarifa.getServicio().equals("Baja Demanda") ) {
+			for (int i = 0; i < listaFacturas.size() ; i++) {
+				if( listaFacturas.get(i).getLecturaActual().getMedidor().getTarifa().equals(tarifa) ) {
+					if( listaFacturas.get(i).getFecha().isAfter(fehcaInicio) && listaFacturas.get(i).getFecha().isBefore(fechaFin) ) {
+						total+=listaFacturas.get(i).calcularConsumoBajo();
+					}
+				}
+			}
+		}
+		return total;
+	}
+	//punto 13
+	public float calcularConsumoTarifaAltaTotal(Tarifa tarifa,LocalDate fehcaInicio,LocalDate fechaFin) {
+		float total = 0;
+		if(tarifa != null && ( tarifa.getServicio().contains("Alta") || tarifa.getServicio().contains("ALTA") ) ) {
+			for (int i = 0; i < listaFacturas.size() ; i++) {
+				if( listaFacturas.get(i).getLecturaActual().getMedidor().getTarifa().equals(tarifa) ) {
+					if( listaFacturas.get(i).getFecha().isAfter(fehcaInicio) && listaFacturas.get(i).getFecha().isBefore(fechaFin) ) {
+						total += ( listaFacturas.get(i).calcularConsumoHorasPico() + listaFacturas.get(i).calcularConsumoHorasValle()+listaFacturas.get(i).calcularConsumoHorasResto() );
+					}
+				}
+			}
+		}
+		return total;
+	}
+	/***********************************************Calcular Precios***************************************************/
+	//punto 5
 	public float calcularPrecioBaja(Factura factura,ItemFactura cargoFijo,ItemFactura cargoVariable ) {
 		
 		return (float)cargoFijo.getPrecioUnitario() + factura.calcularConsumoBajo()*cargoVariable.getPrecioUnitario();
 	}
-	
+	//punto 5
+	/*
 	public float calcularPrecioAlta(Factura factura,ItemFactura cargoFijo,ItemFactura cargoVarible) {
 		float precioAlta = 0;
 		String tipoTension = ( (TarifaAlta) factura.getLecturaActual().getMedidor().getTarifa() ).getTensionContratada();
@@ -684,5 +714,49 @@ public class Sistema {
 		
 		return precioAlta;
 	}
+	*/
 	
+	/******************************************Reportes**********************************/
+	//punto 7
+	public float reporteConsumoPorClienteEntreFechas(Cliente cliente , LocalDate fechaInicio , LocalDate fechaFin){
+		float consumoCliente = 0;
+		
+		if(cliente != null) {
+			for (int i = 0; i < listaFacturas.size() ; i++) {
+				if( listaFacturas.get(i).getLecturaActual().getMedidor().getCliente().equals(cliente) ) {
+					if( listaFacturas.get(i).getFecha().isAfter(fechaInicio) && listaFacturas.get(i).getFecha().isBefore(fechaFin) ) {
+						if(listaFacturas.get(i).getLecturaActual() instanceof LecturaAlta ){
+							consumoCliente += listaFacturas.get(i).calcularConsumoTotalAlta();
+						}
+						else if(listaFacturas.get(i).getLecturaActual() instanceof LecturaBaja){
+							consumoCliente += listaFacturas.get(i).calcularConsumoBajo();
+						}
+					}
+				}
+			}
+		}
+		return consumoCliente;
+	}
+	//punto 8
+	public List<Factura> reporteFacturasEntreFechas(LocalDate fechaInicio,LocalDate fechaFin){
+		List<Factura> listaReporte = new ArrayList<Factura>();
+		for (int i = 0; i < listaFacturas.size() ; i++) {
+			if(listaFacturas.get(i).getFecha().isAfter(fechaInicio) && listaFacturas.get(i).getFecha().isBefore(fechaFin) ) {
+				listaReporte.add (listaFacturas.get(i) );
+			}
+		}
+		return listaReporte;
+	}
+	//punto 9
+	public float reporteEnergioTotalEntreFechas(LocalDate fechaInicio , LocalDate fechaFin) {
+		float energiaTotal = 0;
+		
+		for (int i = 0; i < listaFacturas.size() ; i++) {
+			if(listaFacturas.get(i).getFecha().isAfter(fechaInicio) && listaFacturas.get(i).getFecha().isBefore(fechaFin) ) {
+				energiaTotal += listaFacturas.get(i).calcularConsumoTotal();
+			}
+		}
+		return energiaTotal;
+	}
+		
 }

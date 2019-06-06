@@ -4,15 +4,15 @@ public class ItemFactura {
 	private long idItemFactura ;
 	private String detalle;
 	private String unidad;
-	private int cantidad;
+	private float cantidad;
 	private float precioUnitario;
 
-	public ItemFactura(long idItemFactura, String detalle, String unidad, int cantidad, float precioUnitario) {
+	public ItemFactura(long idItemFactura, String detalle, String unidad, float cantidad, float precioUnitario) {
 		super();
 		this.idItemFactura = idItemFactura;
 		this.detalle = detalle;
 		this.unidad = unidad;
-		this.cantidad = cantidad;
+		this.cantidad = cantidad; 
 		this.precioUnitario = precioUnitario;
 	}
 
@@ -40,11 +40,11 @@ public class ItemFactura {
 		this.precioUnitario = precioUnitario;
 	}
 
-	public int getCantidad() {
+	public float getCantidad() {
 		return cantidad;
 	}
 
-	public void setCantidad(int cantidad) {
+	public void setCantidad(float cantidad) {
 		this.cantidad = cantidad;
 	}
 
@@ -56,19 +56,15 @@ public class ItemFactura {
 		this.unidad = unidad;
 	}
 
-
-	public float calcularSubtotal() {
-		
+	public float calcularSubtotal() {	
 		return precioUnitario*cantidad;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "itemFactura [idItemFactura=" + idItemFactura + ", detalle=" + detalle + ", precioUnitario="
-				+ precioUnitario + ", cantidad=" + cantidad + ", unidad=" + unidad + "]";
+		return "ItemFactura [idItemFactura=" + idItemFactura + ", detalle=" + detalle + ", unidad=" + unidad
+				+ ", cantidad=" + cantidad + ", precioUnitario=" + precioUnitario + "]";
 	}
-	
-	
-	
+
 	
 }
