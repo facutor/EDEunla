@@ -42,9 +42,13 @@ public class LecturaAlta extends Lectura{
 
 	@Override
 	public String toString() {
-		return "[consumoHorasPico=" + consumoHorasPico + ", consumoHorasValle=" + consumoHorasValle
-				+ ", consumoHorasResto=" + consumoHorasResto + "]";
+		return "LecturaAlta["+super.toString()+", consumoHorasPico=" + consumoHorasPico + ", consumoHorasValle=" + consumoHorasValle
+				+", consumoHorasResto="+consumoHorasResto+"]\n";
 	}
+
+	
+
+	
 	
 
 }

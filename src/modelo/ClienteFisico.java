@@ -40,7 +40,7 @@ public class ClienteFisico extends Cliente{
 	
 	@Override
 	public String toString() {
-		return "ClienteFisico [cuil=" + cuil + ", apellido=" + apellido + ", nombre=" + nombre + "]";
+		return "ClienteFisico [demanda="+super.getDemanda()+", cuil=" + cuil + ", apellido=" + apellido + ", nombre=" + nombre + "]";
 	}
-	
+
 }

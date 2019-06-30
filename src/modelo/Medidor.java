@@ -58,17 +58,13 @@ public class Medidor {
 	public void setTarifa(Tarifa tarifa) {
 		this.tarifa = tarifa;
 	}
+	@Override
+	public String toString() {
+		return "\nMedidor [idMedidor=" + idMedidor + ", domicilioMedidor=" + domicilioMedidor + ", esBaja=" + esBaja
+				+ ", cliente=" + cliente + ", tarifa=" + tarifa + "]";
+	}
 	
 	/*****************************to String**********************************/
-	public String toString() {
-		if(esBaja) {
-			return "Id Medidor: "+idMedidor+"\tDomicilio: "+domicilioMedidor+
-					"\nTipo Medidor: Baja Demanda";
-		}
-		else {
-			return "Id Medidor: "+idMedidor+"\tDomicilio: "+domicilioMedidor+
-					"\nTipo Medidor: Alta Demanda";
-		}
-	}
+	
 
 }

@@ -35,7 +35,7 @@ public class ClienteJuridico extends Cliente{
 		
 		@Override
 		public String toString() {
-			return "ClienteJuridico [cuit=" + cuit + ", nombreEmpresa=" + nombreEmpresa + "]";
+			return "ClienteJuridico [demanda="+super.getDemanda()+", cuit=" + cuit + ", nombreEmpresa=" + nombreEmpresa + "]";
 		}
 		
 		

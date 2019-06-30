@@ -49,6 +49,12 @@ public class Lectura{
 	public void setMedidor(Medidor medidor) {
 		this.medidor = medidor;
 	}
+
+	@Override
+	public String toString() {
+		return "idLectura=" + idLectura + ", inspector[dni="+inspector.getDni() +", apellido="+inspector.getApellido()+"], fechaRegistro=" + fechaRegistro
+				+ ", medidor[idMedidor="+medidor.getIdMedidor()+", domicilioMedidor= "+medidor.getDomicilioMedidor()+"]";
+	}
 	
 	
 	

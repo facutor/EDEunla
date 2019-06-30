@@ -1,8 +1,6 @@
 package modelo;
 
 import java.time.LocalDate;
-import java.time.Period;
-
 
 public class LecturaBaja extends Lectura {
 	private float consumo;
@@ -24,11 +22,13 @@ public class LecturaBaja extends Lectura {
 	public void setConsumo(int consumo) {
 		this.consumo = consumo;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "[consumo=" + consumo + "]";
+		return "LecturaBaja["+super.toString()+", consumo=" + consumo +"]\n";
 	}
+	
+	
 	
 
 }

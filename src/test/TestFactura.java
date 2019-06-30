@@ -9,7 +9,7 @@ import modelo.DetalleBaja;
 import modelo.ItemFactura;
 import modelo.Sistema;
 
-public class EscenarioFactura {
+public class TestFactura {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -52,6 +52,7 @@ public class EscenarioFactura {
 		sistema.agregarMedidor("Calle 2", sistema.traerClienteJuridico("20393453452"),sistema.traerTarifaBaja("Baja Demanda"));
 		sistema.agregarMedidor("Calle 3", sistema.traerClienteFisico("20417677377"), sistema.traerTarifaBaja("Baja Demanda"));
 		
+		System.out.println(sistema.getListaMedidores());
 		/******************Lectura Baja*************************/
 		LocalDate fecha1 = LocalDate.of(2019, 4, 10);
 		LocalDate fecha2 = LocalDate.of(2019, 6, 10);

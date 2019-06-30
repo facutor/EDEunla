@@ -1,7 +1,7 @@
 package test;
 
 import modelo.Sistema;
-public class EscenarioZona {
+public class TestZona {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -12,8 +12,8 @@ public class EscenarioZona {
 			sistema.agregarInspector(39666666, "Jorge", "Perez");
 			
 			/*********************************ALTA DE ZONAS*****************************/
-			sistema.agregarzona(0, "Zona Sur", sistema.traerInspector(40667235) );
-			sistema.agregarzona(0, "Zona Norte", sistema.traerInspector(39666666));
+			sistema.agregarzona(1, "Zona Sur", sistema.traerInspector(40667235) );
+			sistema.agregarzona(2, "Zona Norte", sistema.traerInspector(39666666));
 			
 			System.out.println("Antes de Realizar Altas Bajas y Modificacion de Zonas:");
 			for (int i = 0; i < sistema.getListaZonas().size() ; i++) {
@@ -26,7 +26,6 @@ public class EscenarioZona {
 			
 			/***********************************BAJA DE ZONAS*********************************/
 			sistema.eliminarZona(2);
-			
 			/***************************************************************************************/
 			System.out.println("\n\nDespues de realizar Altas,Bajas,Modificacion de Zonas:");
 			for (int i = 0; i < sistema.getListaZonas().size() ; i++) {
@@ -38,6 +37,32 @@ public class EscenarioZona {
 			System.out.println( e.getMessage() );
 		}
 
+		// Posibles excepciones
+		try {
+			// Agregar una zona que ya existe 
+			sistema.agregarzona(1, "Zona Sur", sistema.traerInspector(40667235) );
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		
+		try {
+			//Mandar excepcion al eliminar una zona que no existe 
+			sistema.eliminarZona(4);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		try {
+			//Mandar excepcion al modificar una zona que no existe 
+			sistema.modificarZona(4, "zona 2", sistema.traerInspector(40667235));;
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		
 
 	}
 

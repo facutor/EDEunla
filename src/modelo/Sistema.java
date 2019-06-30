@@ -3,10 +3,8 @@ package modelo;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.ItalicAction;
 
 /*
  * NOTA SISTEMA VA A ACTUAR COMO UNA 'BASE DE DATO' PARA PODER AGREGAR CLIENTES E INSPECTORES Y ASI PODER REALIZAR TODO LO DEMAS
@@ -94,71 +92,7 @@ public class Sistema {
 	public void setListaItemFactura(List<ItemFactura> listaItemFactura) {
 		this.listaItemFactura = listaItemFactura;
 	}
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((listaClientes == null) ? 0 : listaClientes.hashCode());
-		result = prime * result + ((listaFacturas == null) ? 0 : listaFacturas.hashCode());
-		result = prime * result + ((listaInspector == null) ? 0 : listaInspector.hashCode());
-		result = prime * result + ((listaItemFactura == null) ? 0 : listaItemFactura.hashCode());
-		result = prime * result + ((listaLectura == null) ? 0 : listaLectura.hashCode());
-		result = prime * result + ((listaMedidores == null) ? 0 : listaMedidores.hashCode());
-		result = prime * result + ((listaTarifas == null) ? 0 : listaTarifas.hashCode());
-		result = prime * result + ((listaZonas == null) ? 0 : listaZonas.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Sistema other = (Sistema) obj;
-		if (listaClientes == null) {
-			if (other.listaClientes != null)
-				return false;
-		} else if (!listaClientes.equals(other.listaClientes))
-			return false;
-		if (listaFacturas == null) {
-			if (other.listaFacturas != null)
-				return false;
-		} else if (!listaFacturas.equals(other.listaFacturas))
-			return false;
-		if (listaInspector == null) {
-			if (other.listaInspector != null)
-				return false;
-		} else if (!listaInspector.equals(other.listaInspector))
-			return false;
-		if (listaItemFactura == null) {
-			if (other.listaItemFactura != null)
-				return false;
-		} else if (!listaItemFactura.equals(other.listaItemFactura))
-			return false;
-		if (listaLectura == null) {
-			if (other.listaLectura != null)
-				return false;
-		} else if (!listaLectura.equals(other.listaLectura))
-			return false;
-		if (listaMedidores == null) {
-			if (other.listaMedidores != null)
-				return false;
-		} else if (!listaMedidores.equals(other.listaMedidores))
-			return false;
-		if (listaTarifas == null) {
-			if (other.listaTarifas != null)
-				return false;
-		} else if (!listaTarifas.equals(other.listaTarifas))
-			return false;
-		if (listaZonas == null) {
-			if (other.listaZonas != null)
-				return false;
-		} else if (!listaZonas.equals(other.listaZonas))
-			return false;
-		return true;
-	}
+
 	/********************************************Agregar metodos*****************************/
 	public boolean agregarItemFactura(long idItemFactura,String detalle,String unidad,float precioUnitario,float cantidad) {
 		
@@ -175,9 +109,7 @@ public class Sistema {
 		
 		int id = 1;//generador del id de factura
 		if( !listaFacturas.isEmpty() ) {
-			for (int i = 0; i < listaFacturas.size() ; i++) {
-				id++;
-			}
+			id = this.listaFacturas.get(this.listaFacturas.size() - 1).getIdFactura() + 1;
 		}
 		//NOTA: un medidor va a pertenecer a un solo cliente y logicamente las lecturas que paso son de un mismo medidor 
 		String cliente = "";	
@@ -193,60 +125,51 @@ public class Sistema {
 		return listaFacturas.add(f);
 	}
 	
-	public boolean agregarTarifaAlta(String servicio,String tensionContratada, int limite ,List<DetalleAlta> lisDetalleAltas)throws Exception {
-		if(traerTarifaAlta(servicio) != null) throw new Exception("Exepcion: La Tarifa ya existe");
-		
-		Tarifa t = new TarifaAlta(servicio, tensionContratada, limite, lisDetalleAltas);
-		return listaTarifas.add(t);
+	public boolean agregarTarifaAlta(String servicio,String tensionContratada, int limite ,List<DetalleAlta> lisDetalleAltas) {
+		Tarifa tarifa = new TarifaAlta(servicio, tensionContratada, limite, lisDetalleAltas);
+		return listaTarifas.add(tarifa);
 	}
 	
 	public boolean agregarInspector(long dni,String nombre,String apellido) throws Exception{
 		int id = 1; //generador de id para inspector
-		if(traerInspector(dni) != null )throw new Exception("Excepcion: El Inspector ya existe");
-		
+		if(traerInspector(dni) != null )throw new Exception("Excepcion: El inspector con dni= "+dni+" que quiere agregar ya existe");
 		if( !listaInspector.isEmpty() ) {
-			for (int i = 0; i < listaInspector.size() ; i++) {
-				id++;
-			}
+			id = this.listaInspector.get( this.listaInspector.size() - 1 ).getIdInspector() + 1;
 		}
 		Inspector inspector = new Inspector(id, apellido, nombre, dni);
 		return listaInspector.add(inspector);
 	}
 	
 	public boolean agregarClienteFisico(String demanda,String cuil,String apellido,String nombre, Zona zona)throws Exception{
-		int contador = 1;//se usar como generador de los id
-		if( demanda.equals("Alta") || demanda.equals("ALTA") 
-				|| demanda.equals("Baja") || demanda.equals("BAJA") ) {
+		int id = 1;//generador de id
+		if( demanda.equalsIgnoreCase("Alta") || demanda.equalsIgnoreCase("Baja") ) {
 			
-			if (traerClienteFisico(cuil)!=null) {
-				throw new Exception("El cliente con cuil "+cuil+" que quiere ingresar ya exite");
+			if (traerClienteFisico(cuil)!=null) throw new Exception("Excepcion: El cliente Fisico con cuil "+cuil+" que quiere agregar ya existe");
+			else if( !this.listaClientes.isEmpty() ) {
+				id = this.listaClientes.get(this.listaClientes.size() - 1 ).getIdCliente() + 1;
 			}
-			for (int i = 0; i < listaClientes.size(); i++) {
-				contador++;
-			}
-			ClienteFisico cf = new ClienteFisico(contador, demanda, zona, cuil, apellido, nombre);
+			ClienteFisico cf = new ClienteFisico(id, demanda, zona, cuil, apellido, nombre);
 			return listaClientes.add(cf);
+		
 		}
-		else {
-			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
-		}
+		else throw new Exception("La Demanda es Incorrecta");
 	}
 
 	public boolean agregarClienteJuridico(String demanda,String cuit,String nombreEmpresa,Zona zona)throws Exception{
-		int contador = 1;//se usar como generador de los id
+		int id = 1;//se usar como generador de los id
 
-		if( demanda.equals("Alta") || demanda.equals("ALTA") 
-				|| demanda.equals("Baja") || demanda.equals("BAJA") ) {
+		if( demanda.equalsIgnoreCase("Alta") || demanda.equalsIgnoreCase("Baja") ) {
 		
-			if (traerClienteJuridico(cuit)!=null) throw new Exception("El cliente con cuit "+cuit+" que quiere agregar ya existe");
-		    for (int i = 0; i < listaClientes.size(); i++) {
-				contador++;
+			if (traerClienteJuridico(cuit)!=null) throw new Exception("Excepcion: El cliente Juridico con cuit "+cuit+" que quiere agregar ya existe");
+			else if( !this.listaClientes.isEmpty() ) {
+				id = this.listaClientes.get( this.listaClientes.size() - 1).getIdCliente() + 1;
 			}
-		    ClienteJuridico cj= new ClienteJuridico(contador, demanda, zona, cuit, nombreEmpresa);
+		    ClienteJuridico cj= new ClienteJuridico(id, demanda, zona, cuit, nombreEmpresa);
 		    return listaClientes.add(cj);
+		
 		}
 		else {
-			throw new Exception("Exepcion: La demanda "+demanda+" es incorrecta");
+			throw new Exception("Exepcion: La demanda es incorrecta");
 		}
 	}
 	
@@ -254,7 +177,7 @@ public class Sistema {
 		boolean esBaja = false;
 		int contador = 1;
 		
-		if (traerMedidor(domicilioMedidor)!=null) throw new Exception("El medidor con domicilio "+domicilioMedidor+" que quiere agregar ya exite");
+		if (traerMedidor(domicilioMedidor)!=null) throw new Exception("El medidor con domicilio="+domicilioMedidor+" que quiere agregar ya exite");
 	    
 		if (listaMedidores.isEmpty()==false) {
 			for (int i = 0; i < listaMedidores.size(); i++) {
@@ -274,7 +197,6 @@ public class Sistema {
 	public boolean agregarzona(int idZona,String zona, Inspector inspector) throws Exception {
 		if (traerZona(idZona)!=null) throw new Exception("La zona con id "+idZona+" que quiere ingresar ya existe");
 		idZona = 1;
-		
 		if (getListaZonas().isEmpty()==false) {
 			idZona=listaZonas.get(listaZonas.size()-1).getIdZona()+1;
 		}	
@@ -284,7 +206,7 @@ public class Sistema {
 
 	public boolean agregarLecturaBaja(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumo)throws Exception {
 		int c=1;
-		if (traerLecturaBaja(fechaRegistro)!=null) throw new Exception("La lectura con fecha "+fechaRegistro+" que quiere ingresar ya exite");
+		if (traerLecturaBaja(fechaRegistro)!=null) throw new Exception("La lecturaBaja con fechaRegistro="+fechaRegistro+" que quiere ingresar ya existe");
 	    if (listaLectura.isEmpty()==false) {
 	    	for (int i = 0; i < listaLectura.size(); i++) {
 				c++;
@@ -296,24 +218,17 @@ public class Sistema {
 	
 	public boolean agregarLecturaAlta(Inspector inspector,LocalDate fechaRegistro,Medidor medidor,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto) throws Exception{
 		int c = 1;
-		if(traerLecturaAlta(fechaRegistro)!=null) throw new Exception("La lectura con fecha "+fechaRegistro+" que quiere agregar ya exite");
-	
-		if (listaLectura.isEmpty()) {
-			for (int i = 0; i < listaLectura.size(); i++) {
-				c++;
-			}
+		if(traerLecturaAlta(fechaRegistro)!=null) throw new Exception("La lecturaAlta con fechaRegistro="+fechaRegistro+" que quiere agregar ya existe");
+		if ( !this.listaLectura.isEmpty()) {
+			c = this.listaLectura.get(this.listaLectura.size() - 1).getIdLectura() + 1;
 		}
-		
 		LecturaAlta la = new LecturaAlta(c, inspector, fechaRegistro, medidor, consumoHorasPico, consumoHorasValle, consumoHorasResto);
 		return listaLectura.add(la);
 	}
 	
 	public boolean agregarTarifaBaja(String servicio, List<DetalleBaja> listaDetalle) throws Exception {
-		if (traerTarifaBaja(servicio)!= null) {
-			throw new Exception("La tarifa ingresada ya existe");
-		}
+		if (traerTarifaBaja(servicio)!= null) throw new Exception("La tarifa con el servicio="+servicio+" que quiere ingresar ya existe");
 		TarifaBaja tarifaBaja = new TarifaBaja(servicio, listaDetalle);
-		
 		return listaTarifas.add(tarifaBaja);
 	}
 	 
@@ -321,13 +236,11 @@ public class Sistema {
 	public Inspector traerInspector(long dni) {
 		Inspector inspector = null;
 		int contador = 0;
-		
 		while( inspector == null && contador < listaInspector.size() ) {
 			if(listaInspector.get(contador).getDni()== dni) {
 				
 				inspector = listaInspector.get(contador);
 			}
-			
 			contador ++;
 		}
 		return inspector;
@@ -347,7 +260,6 @@ public class Sistema {
 		}
 		return dato;
 	}
-	
 	public ClienteJuridico traerClienteJuridico(String cuit) {
 		ClienteJuridico dato=null;
 		int i=0;
@@ -361,9 +273,8 @@ public class Sistema {
 			i++;
 		}
 		return dato;
-
 	}
-		
+	
 	public Medidor traerMedidor(String domicilio){
 		Medidor dato=null;
 		int i=0;
@@ -402,7 +313,6 @@ public class Sistema {
 		}
 		return lecturaBaja;
 	}
-	
 	public LecturaAlta traerLecturaAlta(LocalDate fechaRegistro) {
 		int i = 0;
 		LecturaAlta lecturaAlta = null;
@@ -416,6 +326,17 @@ public class Sistema {
 			i++;
 		}
 		return lecturaAlta;
+	}
+	public Lectura traerLectura(LocalDate fechaRegistro) {
+		int i = 0;
+		Lectura lectura = null;
+		while(lectura == null && i < listaLectura.size() ) {
+			if(this.listaLectura.get(i).getFechaRegistro().equals(fechaRegistro) ) {
+					lectura = this.listaLectura.get(i);
+			}
+			i++;
+		}
+		return lectura;
 	}
 	
 	public TarifaBaja traerTarifaBaja(String servicio) {
@@ -432,8 +353,7 @@ public class Sistema {
 			contador++;
 		}
 		return tarifaBaja;
-	}
-	
+	}	
 	public TarifaAlta traerTarifaAlta(String servicio) {
 		TarifaAlta dato = null;
 		int c=0;
@@ -448,7 +368,19 @@ public class Sistema {
 		}
 		return dato;	
 	}
-		
+	public Tarifa traerTarifa(String servicio) {
+		Tarifa tarifa = null;
+		int indice = 0;
+		while( tarifa == null && indice < this.listaTarifas.size() ) {
+			if( this.listaTarifas.get(indice).getServicio().equals(servicio) ) {
+				tarifa = this.listaTarifas.get(indice);
+			}
+			indice++;
+		}
+		return tarifa;
+	}
+	
+	
 	public Factura traerFactura(int idFactura) {
 		Factura dato = null;
 		int i=0;
@@ -461,6 +393,7 @@ public class Sistema {
 		return dato;
 	}
 	
+	
 	public ItemFactura traerItemFactura(long idItemFactura) {
 		ItemFactura dato =null;
 		int i=0;
@@ -470,8 +403,7 @@ public class Sistema {
 			}
 			i++;
 		}
-		return dato;
-		
+		return dato;	
 	}
 	/*****************************************Eliminar Metodo*****************************************************************/	
 	public boolean eliminarInspector(long dni)throws Exception {
@@ -485,97 +417,67 @@ public class Sistema {
 		return listaInspector.remove(inspector);	
 	}
 	
-	public void eliminarClienteFisico (String cuil)throws Exception {
+	public boolean eliminarClienteFisico (String cuil)throws Exception {
+		ClienteFisico cf = this.traerClienteFisico(cuil);
+		if( cf == null ) throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere eliminar no existe");
 		
-		if(traerClienteFisico(cuil) != null) {
-			listaClientes.remove( traerClienteFisico(cuil) );
-		}
-		else throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere eliminar no existe");
+		return this.listaClientes.remove(cf);		
 	}
 	
-	
-	public void eliminarClienteJuridico (String cuit) throws Exception {
+	public boolean eliminarClienteJuridico (String cuit) throws Exception {	
+		ClienteJuridico cj = this.traerClienteJuridico(cuit);
+		if(cj ==  null) throw new Exception("Excepcion: El Cliente con cuit="+cuit+" que quiere eliminar no existe");
 		
-		if(traerClienteJuridico(cuit) !=  null) {
-			listaClientes.remove( traerClienteJuridico(cuit) );
-		}
-		else {
-			throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere eliminar no existe");
-		}
+		return this.listaClientes.remove(cj);
 	}
 
-	public void eliminarMedidor(String domicilioMedidor)throws Exception {
+	public boolean eliminarMedidor(String domicilioMedidor)throws Exception {
+		Medidor m = this.traerMedidor(domicilioMedidor);
+		if(m == null) throw new Exception("Excepcion: El Medidor con domicilio="+domicilioMedidor+" que quiere eliminar no existe");
 		
-		if(traerMedidor(domicilioMedidor).getCliente().getDemanda() != null) {
-			listaMedidores.remove( traerMedidor(domicilioMedidor) );
-		}
-		else {
-			throw new Exception("Excepcion: El Medidor con domicilio"+domicilioMedidor+" que quiere eliminar no existe");
-		}
+		return this.listaMedidores.remove(m);
 	}
 
-	public void eliminarZona(int idZona) throws Exception {
+	public boolean eliminarZona(int idZona) throws Exception {
+		Zona z = this.traerZona(idZona);
+		if (z==null) throw new Exception("Excepcion: La Zona con id="+idZona+" que quiere eliminar no existe");
 		
-		if (traerZona(idZona).getZona()!=null) {
-			listaZonas.remove( traerZona(idZona) );
-		}
-		else throw new Exception("Excepcion: La Zona con id "+idZona+" que quiere eliminar no existe");
+		return this.listaZonas.remove(z);
 	}
 	
-	public void eliminarLecturaAlta(LocalDate fechaRegistro) throws Exception{		
+	public boolean eliminarLectura(LocalDate fechaRegistro)throws Exception {
+		Lectura lectura = this.traerLectura(fechaRegistro);
+		if(lectura == null) throw new Exception("Excepcion: La Lectura con la fechaRegistro="+fechaRegistro+" que quiere eliminar no existe");
 		
-		if(traerLecturaAlta(fechaRegistro).getFechaRegistro() != null) {
-			listaLectura.remove( traerLecturaAlta(fechaRegistro) );
-		}
-		else {
-			throw new Exception("Excepcion: La Lectura solicitada no existe");
-		}
+		return this.listaLectura.remove(lectura);
 	}
 	
-	public void eliminarLecturaBaja(LocalDate fechaRegistro) throws Exception{
+	public boolean eliminarTarifa(String servicio)throws Exception{
+		Tarifa tarifa = this.traerTarifa(servicio);
+		if(tarifa == null) throw new Exception("Excepcion: La Tarifa que quiere eliminar no existe");
 		
-		if(traerLecturaBaja(fechaRegistro).getFechaRegistro() != null) {
-			listaLectura.remove( traerLecturaBaja(fechaRegistro) );
-
-		}
-		else {
-			throw new Exception("Excepcion: La Lectura solicitada no existe");
-		}
+		return this.listaTarifas.remove(tarifa);
 	}
 	
-	public void eliminarTarifaAlta(String servicio) throws Exception {
-		if (traerTarifaAlta(servicio).getServicio() != null) {
-			listaTarifas.remove(traerTarifaAlta(servicio));
-		}
-		else throw new Exception("Excepcion: La tarifa ingresada no exite");
-	}
-	public void eliminarTarifaBaja(String servicio) throws Exception {
-		if (traerTarifaBaja(servicio).getServicio() != null) {
-			listaTarifas.remove(traerTarifaBaja(servicio));
-		}
-		else throw new Exception("Excepcion: La tarifa ingresa no existe");
-	}
-	public void eliminarFactura(int idFactura) throws Exception {
-		if (traerFactura(idFactura)!=null) {
-			listaFacturas.remove(traerFactura(idFactura));
-		}
-		else {
-			throw new Exception("Exception: La factura ingresada no existe");
-		}
+	public boolean eliminarFactura(int idFactura) throws Exception {
+		Factura f = this.traerFactura(idFactura);
+		if ( f == null) throw new Exception("Exception: La factura que quiere eliminar no existe");
+		
+		return this.listaFacturas.remove(f);
 	}
 	
-	public void eliminarItemFactura(int idItemFactura) throws Exception {
-		if (traerItemFactura(idItemFactura)!=null) {
-			listaItemFactura.remove(traerItemFactura(idItemFactura));
-		}
-		else throw new Exception("Exception: El Item Factura ingresado no existe");
+	public boolean eliminarItemFactura(int idItemFactura) throws Exception {
+		ItemFactura itemF = this.traerItemFactura(idItemFactura);
+		if (traerItemFactura(idItemFactura) == null) throw new Exception("Exception: El Item Factura que quiere eliminar no existe");
+	
+		return this.listaItemFactura.remove(itemF);
 	}
 	/*******************************************Modificar Metodos*************************************************************/
 	public void modificarInspector(long dni , String nombre,String apellido)throws Exception {
 		Inspector inspector = traerInspector(dni);
 		
 		if(inspector == null) {
-			throw new Exception("Excepcion: El Inspector Solicitado no Existe");
+			throw new Exception("Excepcion: El Inspector que quiere modificar no Existe");
 		}
 		else {
 			inspector.setApellido(apellido);
@@ -583,67 +485,57 @@ public class Sistema {
 		}
 	}
 	
-	public void modificarLecturaAlta(LocalDate fechaRegistro,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto,
-		LocalDate fechaNuevaRegitro) throws Exception {
-		
-		if(traerLecturaAlta(fechaRegistro) != null) {
+	public void modificarLecturaAlta(LocalDate fechaRegistro,int consumoHorasPico,int consumoHorasValle,int consumoHorasResto) throws Exception {
+		LecturaAlta la = this.traerLecturaAlta(fechaRegistro);
+		if( la == null) throw new Exception("Excepcion: La Lectura Alta con la fechaRegistro="+fechaRegistro+" que quiere modificar no existe");  
 			
-			traerLecturaAlta(fechaRegistro).setConsumoHorasPico(consumoHorasPico);
-			traerLecturaAlta(fechaRegistro).setConsumoHorasValle(consumoHorasValle);
-			traerLecturaAlta(fechaRegistro).setConsumoHorasResto(consumoHorasResto);
-			traerLecturaAlta(fechaRegistro).setFechaRegistro(fechaNuevaRegitro);
-		}
-		else throw new Exception("Excepcion: La Lectura Solicitada no existe");
+		la.setConsumoHorasPico(consumoHorasPico);
+		la.setConsumoHorasValle(consumoHorasValle);
+		la.setConsumoHorasResto(consumoHorasResto);
 	}
 	
-	public void modificarLecturaBaja(LocalDate fechaRegistro, int consumo,LocalDate fechaNuevaRegistro)throws Exception {
+	public void modificarLecturaBaja(LocalDate fechaRegistro, int consumo)throws Exception {
 		
-		if(traerLecturaBaja(fechaRegistro).getFechaRegistro() != null) {
+		LecturaBaja lb = this.traerLecturaBaja(fechaRegistro);
+		if( lb == null) throw new Exception("Excepcion: La Lectura Baja con la fechaRegistro="+fechaRegistro+" que quiere modificar no existe");  
 			
-			traerLecturaBaja(fechaRegistro).setConsumo(consumo);
-			traerLecturaBaja(fechaRegistro).setFechaRegistro(fechaNuevaRegistro);
-		}
-		else throw new Exception("Excepcion: La Lectura solicitada no existe");
+		lb.setConsumo(consumo);
 	}
 
 	public void modificarZona(int idZona, String zona , Inspector inspector) throws Exception {
-		
-		if(traerZona(idZona) != null) {
-			traerZona(idZona).setZona(zona);
-			traerZona(idZona).setInspector(inspector);
-		}
-		else throw new Exception("Excepcion: La zona con id "+idZona+" que quiere modificar no existe");
+		Zona z = this.traerZona(idZona);
+		if( z == null) throw new Exception("Excepcion: La zona que quiere modificar no existe");
+			
+		z.setZona(zona);
+		z.setInspector(inspector);
 	}
 	
 	public void modificarMedidor(String domicilioMedidor, Cliente cliente) throws Exception {
-		
-		if ( traerMedidor(domicilioMedidor) != null) {
+		Medidor medidor = this.traerMedidor(domicilioMedidor);
+		if ( medidor == null) throw new Exception("Excepcion: El Medidor con domicilio="+domicilioMedidor+" que quiere modificar no existe");
 			
-			if(cliente.getDemanda().equals("Alta") ) {
-				traerMedidor(domicilioMedidor).setEsBaja(false);
-			}
-			else {
-				traerMedidor(domicilioMedidor).setEsBaja(true);
-			}
+		if(cliente.getDemanda().equalsIgnoreCase("Alta") ) {
+			medidor.setEsBaja(false);
 		}
-		else throw new Exception("Excepcion: El Medidor con domicilio "+domicilioMedidor+" que quiere modificar no existe");
-		
+		else {
+			medidor.setEsBaja(true);
+		}
+		medidor.setCliente(cliente);
 	}
+	
 		
 	public void modificarClienteFisico(String cuil, String demanda) throws Exception {
+		ClienteFisico cf = this.traerClienteFisico(cuil);
+		if( cf == null) throw new Exception("Excepcion: El Cliente Fisico con cuil "+cuil+" que quiere modificar no existe");
 		
-		if(traerClienteFisico(cuil) != null) {
-			traerClienteFisico(cuil).setDemanda(demanda);
-		}
-		else throw new Exception("Excepcion: El Cliente con cuil "+cuil+" que quiere modificar no existe");
+		cf.setDemanda(demanda);
 	}
 	
 	public void modificarClienteJuridico(String cuit, String demanda) throws Exception {
+		ClienteJuridico cj = this.traerClienteJuridico(cuit);
+		if ( cj == null) throw new Exception("Excepcion: El Cliente Juridico con cuit "+cuit+" que quiere modificar no existe");
 		
-		if (traerClienteJuridico(cuit) != null) {
-			traerClienteJuridico(cuit).setDemanda(demanda);
-		}
-		else throw new Exception("Excepcion: El Cliente con cuit "+cuit+" que quiere modificar no existe");
+		cj.setDemanda(demanda);
 	}
 	
 	/***********************************************Calcular Consumos*********************************************/
